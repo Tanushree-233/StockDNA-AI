@@ -1,0 +1,14 @@
+project:
+  name: StockDNA AI
+
+data:
+  start_date: "2018-01-01"
+  end_date: "2025-12-31"
+
+paths:
+  companies: "data/reference/companies.csv"
+  prices: "data/raw/prices"
+  market: "data/raw/market"
+
+market:
+  index: "^NSEI"
