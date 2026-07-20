@@ -11,4 +11,5 @@ paths:
   market: "data/raw/market"
 
 market:
-  index: "^NSEI"
+  nifty: "^NSEI"
+  vix: "^INDIAVIX"
