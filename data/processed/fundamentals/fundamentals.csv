@@ -1,0 +1,4 @@
+Ticker,Company,Sector,Industry,MarketCap,PE_Ratio,BookValue,DividendYield,Beta
+TCS.NS,Tata Consultancy Services Limited,Technology,Information Technology Services,8045540671488,16.27415,303.014,2.86,0.241
+INFY.NS,Infosys Limited,Technology,Information Technology Services,4355026845696,14.381601,233.15013,4.56,0.131
+RELIANCE.NS,Reliance Industries Limited,Energy,Oil & Gas Refining & Marketing,17758664261632,23.84266,668.045,0.45,0.131
