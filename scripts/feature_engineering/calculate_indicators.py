@@ -18,6 +18,11 @@ def calculate_indicators(df):
     """
     # 1. Clean and convert price columns to numeric data types
     # This removes commas or special characters and forces strings into numbers
+    print(df.dtypes)
+    print(df.head())
+
+
+
     price_cols = ["Open", "High", "Low", "Close"]
     for col in price_cols:
         if col in df.columns:
@@ -65,6 +70,43 @@ def calculate_indicators(df):
     # Rolling Volatility (20-day)
     df["Volatility"] = df["Daily_Return"].rolling(window=20).std()
 
+    # Lag Features
+    df["Lag_Close_1"] = df["Close"].shift(1)
+    df["Lag_Close_3"] = df["Close"].shift(3)
+    df["Lag_Close_5"] = df["Close"].shift(5)
+
+    # Momentum
+    df["Momentum_5"] = df["Close"] - df["Close"].shift(5)
+    df["Momentum_10"] = df["Close"] - df["Close"].shift(10)
+
+    # Rate of Change
+    df["ROC"] = (
+        (df["Close"] - df["Close"].shift(10))
+        / df["Close"].shift(10)
+    ) * 100
+
+    # Volume Change
+    df["Volume_Change"] = df["Volume"].pct_change()
+
+    # Daily Price Spread
+    df["High_Low_Spread"] = df["High"] - df["Low"]
+
+    # Target (Next Day Return)
+    df["Target_Return"] = df["Close"].shift(-1) / df["Close"] - 1
+
+    def classify(x):
+
+        if x > 0.01:
+            return "BUY"
+
+        elif x < -0.01:
+            return "SELL"
+
+        else:
+            return "HOLD"
+
+    df["Target"] = df["Target_Return"].apply(classify)
+
     return df
 
 def process_all_stocks():
@@ -82,7 +124,16 @@ def process_all_stocks():
                 file.replace(".csv", "_features.csv")
             )
 
-            df = pd.read_csv(input_path)
+            df = pd.read_csv(input_path, skiprows=[1])
+
+            df.rename(columns={"Price": "Date"}, inplace=True)
+
+            numeric_columns = ["Open", "High", "Low", "Close", "Volume"]
+
+            for col in numeric_columns:
+                df[col] = pd.to_numeric(df[col], errors="coerce")
+
+            df.dropna(inplace=True)
 
             df = calculate_indicators(df)
 
