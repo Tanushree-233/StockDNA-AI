@@ -45,8 +45,14 @@ def download_prices():
                 ticker,
                 start=start,
                 end=end,
-                progress=False
+                progress=False,
+                auto_adjust=False,
+                group_by="column"
             )
+
+            # Flatten MultiIndex columns if present
+            if isinstance(df.columns, pd.MultiIndex):
+                df.columns = df.columns.get_level_values(0)
 
             if df.empty:
                 logger.error(f"No data found for {ticker}")
