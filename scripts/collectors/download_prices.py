@@ -8,6 +8,34 @@ from tqdm import tqdm
 from scripts.utils.config import load_config
 from scripts.utils.logger import logger
 
+import pandas as pd
+
+
+def download_single_stock(
+    ticker: str,
+    period: str = "2y"
+) -> pd.DataFrame:
+    """
+    Download historical data for a single ticker.
+    """
+
+    if not ticker.endswith(".NS"):
+        ticker += ".NS"
+
+    df = yf.download(
+        ticker,
+        period=period,
+        progress=False,
+        auto_adjust=False,
+        group_by="column"
+    )
+
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.get_level_values(0)
+
+    df.reset_index(inplace=True)
+
+    return df
 
 def download_prices():
 
