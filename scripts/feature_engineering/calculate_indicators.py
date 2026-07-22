@@ -17,12 +17,6 @@ def calculate_indicators(df):
     """
     Calculate technical indicators for a stock DataFrame.
     """
-    # 1. Clean and convert price columns to numeric data types
-    # This removes commas or special characters and forces strings into numbers
-    print(df.dtypes)
-    print(df.head())
-
-
 
     price_cols = ["Open", "High", "Low", "Close"]
     for col in price_cols:
