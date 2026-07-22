@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import numpy as np
 
 from ta.momentum import RSIIndicator
 from ta.trend import EMAIndicator
@@ -94,6 +95,54 @@ def calculate_indicators(df):
     # Target (Next Day Return)
     df["Target_Return"] = df["Close"].shift(-1) / df["Close"] - 1
 
+    # Trend Features
+    df["SMA100"] = df["Close"].rolling(window=100).mean()
+    df["SMA200"] = df["Close"].rolling(window=200).mean()
+
+    df["EMA100"] = EMAIndicator(
+        close=df["Close"],
+        window=100
+    ).ema_indicator()
+
+    # Momentum
+    df["Momentum_5"] = df["Close"] - df["Close"].shift(5)
+    df["Momentum_10"] = df["Close"] - df["Close"].shift(10)
+    df["Momentum_20"] = df["Close"] - df["Close"].shift(20)
+
+    # Lag Features
+    df["Lag_Close_1"] = df["Close"].shift(1)
+    df["Lag_Close_3"] = df["Close"].shift(3)
+    df["Lag_Close_5"] = df["Close"].shift(5)
+
+    df["Lag_Volume_1"] = df["Volume"].shift(1)
+
+    # Volume Features
+    df["Volume_Change"] = df["Volume"].pct_change()
+
+    df["Volume_MA20"] = (
+        df["Volume"]
+        .rolling(20)
+        .mean()
+    )
+
+    # Price Action
+    df["High_Low_Spread"] = df["High"] - df["Low"]
+
+    df["Open_Close_Spread"] = df["Open"] - df["Close"]
+
+    df["Target_Return"] = (
+    df["Close"].shift(-1) - df["Close"]
+    ) / df["Close"]
+
+    def classify_target(x):
+        if x > 0.01:
+            return 2      # BUY
+        elif x < -0.01:
+            return 0      # SELL
+        return 1          # HOLD
+
+    df["Target"] = df["Target_Return"].apply(classify_target)
+
     def classify(x):
 
         if x > 0.01:
@@ -107,12 +156,21 @@ def calculate_indicators(df):
 
     df["Target"] = df["Target_Return"].apply(classify)
 
+    # Replace infinite values
+    df.replace([np.inf, -np.inf], np.nan, inplace=True)
+
+    # Remove rows with missing values
+    df.dropna(inplace=True)
+
+    # Reset index
+    df.reset_index(drop=True, inplace=True)
+
     return df
+
 
 def process_all_stocks():
 
     for file in os.listdir(INPUT_FOLDER):
-
         if file.endswith(".csv"):
 
             print(f"Processing {file}...")
@@ -124,19 +182,29 @@ def process_all_stocks():
                 file.replace(".csv", "_features.csv")
             )
 
-            df = pd.read_csv(input_path, skiprows=[1])
+            # Read CSV
+            df = pd.read_csv(input_path)
 
-            df.rename(columns={"Price": "Date"}, inplace=True)
+            # Convert Date column
+            df["Date"] = pd.to_datetime(df["Date"])
 
-            numeric_columns = ["Open", "High", "Low", "Close", "Volume"]
+            # Convert numeric columns
+            numeric_columns = [
+                "Open",
+                "High",
+                "Low",
+                "Close",
+                "Adj Close",
+                "Volume"
+            ]
 
             for col in numeric_columns:
                 df[col] = pd.to_numeric(df[col], errors="coerce")
 
-            df.dropna(inplace=True)
-
+            # Calculate all technical indicators
             df = calculate_indicators(df)
 
+            # Save processed file
             df.to_csv(output_path, index=False)
 
             print(f"Saved: {output_path}")
