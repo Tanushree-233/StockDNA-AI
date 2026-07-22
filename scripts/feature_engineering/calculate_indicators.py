@@ -141,8 +141,6 @@ def calculate_indicators(df):
             return 0      # SELL
         return 1          # HOLD
 
-    df["Target"] = df["Target_Return"].apply(classify_target)
-
     def classify(x):
 
         if x > 0.01:
