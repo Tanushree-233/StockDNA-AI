@@ -12,3 +12,6 @@ yfinance
 ta
 tqdm
 PyYAML
+
+sqlalchemy
+psycopg2-binary

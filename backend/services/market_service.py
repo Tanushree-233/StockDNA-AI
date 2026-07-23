@@ -20,6 +20,12 @@ def get_market_features():
         auto_adjust=False
     )
 
+    if nifty.empty:
+        raise ValueError("Unable to fetch NIFTY data.")
+
+    if vix.empty:
+        raise ValueError("Unable to fetch VIX data.")
+
     nifty_close = float(nifty["Close"].iloc[-1])
 
     nifty_volume = float(nifty["Volume"].iloc[-1])
