@@ -2,6 +2,7 @@ import joblib
 import numpy as np
 import pandas as pd
 
+
 from backend.services.feature_service import get_price_features
 from backend.services.fundamentals_service import get_fundamentals
 from backend.services.market_service import get_market_features
