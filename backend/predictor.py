@@ -1,7 +1,7 @@
 import joblib
 import numpy as np
 import pandas as pd
-
+from backend.services.news_service import get_latest_news
 
 from backend.services.feature_service import get_price_features
 from backend.services.fundamentals_service import get_fundamentals
@@ -70,6 +70,7 @@ def predict(ticker: str):
 
         prediction = int(np.argmax(probabilities))
 
+        news = get_latest_news(ticker)
         result = {
 
             "ticker": ticker.upper(),
@@ -102,7 +103,8 @@ def predict(ticker: str):
 
             },
 
-            "top_features": top_features
+            "top_features": top_features,
+            "latest_news": news
 
         }
 

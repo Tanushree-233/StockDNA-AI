@@ -10,6 +10,7 @@ from backend.services.auth_service import (
     create_access_token
 )
 
+
 router = APIRouter(
     prefix="/auth",
     tags=["Authentication"]
@@ -32,16 +33,29 @@ def register(
 ):
 
     # Check if email already exists
-    existing_user = (
+    existing_email = (
         db.query(User)
         .filter(User.email == user.email)
         .first()
     )
 
-    if existing_user:
+    if existing_email:
         raise HTTPException(
             status_code=400,
             detail="Email already registered"
+        )
+
+    # Check if username already exists
+    existing_username = (
+        db.query(User)
+        .filter(User.username == user.username)
+        .first()
+    )
+
+    if existing_username:
+        raise HTTPException(
+            status_code=400,
+            detail="Username already taken"
         )
 
     # Create new user
@@ -58,6 +72,7 @@ def register(
     return {
         "message": "User registered successfully"
     }
+
 
 @router.post("/login")
 def login(
