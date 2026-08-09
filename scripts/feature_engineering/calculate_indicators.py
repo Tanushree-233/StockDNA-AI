@@ -179,6 +179,7 @@ def process_all_stocks():
 
             # Convert Date column
             df["Date"] = pd.to_datetime(df["Date"])
+            df = df.sort_values("Date").reset_index(drop=True)
 
             # Convert numeric columns
             numeric_columns = [

@@ -1,20 +1,50 @@
 import os
 import joblib
 from xgboost import XGBClassifier
+import sys
 
-# -----------------------
-# Load Prepared Data
-# -----------------------
+PROJECT_ROOT = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "..")
+)
 
-X_train = joblib.load("models/X_train.pkl")
-X_test = joblib.load("models/X_test.pkl")
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+# ============================================================
+# CONFIG
+# ============================================================
 
-y_train = joblib.load("models/y_train.pkl")
-y_test = joblib.load("models/y_test.pkl")
+X_TRAIN_PATH = "models/X_train.pkl"
+X_TEST_PATH = "models/X_test.pkl"
+Y_TRAIN_PATH = "models/y_train.pkl"
+Y_TEST_PATH = "models/y_test.pkl"
 
-# -----------------------
-# Create Model
-# -----------------------
+MODEL_PATH = "models/final_xgboost_model.pkl"
+
+# ============================================================
+# LOAD PREPARED DATA
+# ============================================================
+
+X_train = joblib.load(X_TRAIN_PATH)
+X_test = joblib.load(X_TEST_PATH)
+
+y_train = joblib.load(Y_TRAIN_PATH)
+y_test = joblib.load(Y_TEST_PATH)
+
+print("=" * 60)
+print("FINAL XGBOOST TRAINING")
+print("=" * 60)
+
+print("\nTraining:")
+print("X_train:", X_train.shape)
+print("y_train:", y_train.shape)
+
+print("\nTesting:")
+print("X_test :", X_test.shape)
+print("y_test :", y_test.shape)
+
+# ============================================================
+# CREATE MODEL
+# ============================================================
 
 model = XGBClassifier(
     objective="multi:softprob",
@@ -31,24 +61,55 @@ model = XGBClassifier(
     eval_metric="mlogloss"
 )
 
-# -----------------------
-# Train
-# -----------------------
+# ============================================================
+# TRAIN
+# ============================================================
 
-print("=" * 50)
-print("Training Model...")
-print("=" * 50)
+print("\n" + "=" * 60)
+print("TRAINING MODEL")
+print("=" * 60)
 
-model.fit(X_train, y_train)
+model.fit(
+    X_train,
+    y_train
+)
 
 print("\nTraining Complete!")
 
-# -----------------------
-# Save Model
-# -----------------------
+# ============================================================
+# QUICK SANITY CHECK
+# ============================================================
 
-os.makedirs("models", exist_ok=True)
+train_accuracy = model.score(
+    X_train,
+    y_train
+)
 
-joblib.dump(model, "models/xgboost_model.pkl")
+test_accuracy = model.score(
+    X_test,
+    y_test
+)
 
-print("\nModel Saved!")
+print("\nTraining Accuracy:", round(train_accuracy, 4))
+print("Test Accuracy    :", round(test_accuracy, 4))
+
+# ============================================================
+# SAVE MODEL
+# ============================================================
+
+os.makedirs(
+    "models",
+    exist_ok=True
+)
+
+joblib.dump(
+    model,
+    MODEL_PATH
+)
+
+print("\nModel Saved:")
+print(MODEL_PATH)
+
+print("\n" + "=" * 60)
+print("FINAL XGBOOST TRAINING COMPLETE")
+print("=" * 60)

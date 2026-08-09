@@ -25,7 +25,7 @@ def preprocess_earnings():
     df = df.dropna(how="all")
 
     # Fill missing values
-    df = df.ffill().bfill()
+    df = df.ffill()
 
     # Clean column names
     df.columns = df.columns.str.strip()
