@@ -34,7 +34,7 @@ def preprocess_prices():
         df = df.dropna(how="all")
 
         # Fill missing values
-        df = df.ffill().bfill()
+        df = df.ffill()
 
         # Convert Date column
         if "Date" in df.columns:

@@ -61,9 +61,37 @@ def download_prices():
         filepath = os.path.join(save_folder, filename)
 
         # Skip if file already exists
+        existing = None
+
         if os.path.exists(filepath):
-            logger.info(f"{filename} already exists. Skipping...")
-            continue
+            try:
+                existing = pd.read_csv(filepath)
+
+                if not existing.empty and "Date" in existing.columns:
+                    existing["Date"] = pd.to_datetime(
+                        existing["Date"],
+                        errors="coerce"
+                    )
+
+                    last_date = existing["Date"].max()
+
+                    if pd.notna(last_date):
+                        download_start = (
+                            last_date + pd.Timedelta(days=1)
+                        ).strftime("%Y-%m-%d")
+                    else:
+                        download_start = start
+                else:
+                    download_start = start
+
+            except Exception as e:
+                logger.warning(
+                    f"Could not read existing {filename}: {e}"
+                )
+                existing = None
+                download_start = start
+        else:
+            download_start = start
 
         logger.info(f"Downloading {ticker}")
 
@@ -71,7 +99,7 @@ def download_prices():
 
             df = yf.download(
                 ticker,
-                start=start,
+                start=download_start,
                 end=end,
                 progress=False,
                 auto_adjust=False,
@@ -86,6 +114,33 @@ def download_prices():
                 logger.error(f"No data found for {ticker}")
                 continue
 
+            if existing is not None and not existing.empty:
+
+                existing["Date"] = pd.to_datetime(
+                    existing["Date"],
+                    errors="coerce"
+                )
+
+                df["Date"] = pd.to_datetime(
+                    df["Date"],
+                    errors="coerce"
+                )
+
+                df = pd.concat(
+                    [existing, df],
+                    ignore_index=True
+                )
+
+                df = df.drop_duplicates(
+                    subset=["Date"],
+                    keep="last"
+                )
+
+                df = df.sort_values("Date").reset_index(
+                    drop=True
+                )
+
+            df.to_csv(filepath, index=False)
             df.to_csv(filepath)
 
             logger.info(f"Saved {filename}")

@@ -26,29 +26,101 @@ def download_macro():
 
     for name, symbol in macro_symbols.items():
 
-        logger.info(f"Downloading {name}")
+        filepath = os.path.join(
+            save_folder,
+            f"{name}.csv"
+        )
 
-        try:
+        existing = None
 
-            df = yf.download(
-                symbol,
-                start=start,
-                end=end,
-                progress=False
+        if os.path.exists(filepath):
+
+            existing = pd.read_csv(filepath)
+
+            if "Date" in existing.columns:
+
+                existing["Date"] = pd.to_datetime(
+                    existing["Date"],
+                    errors="coerce"
+                )
+
+                last_date = existing["Date"].max()
+
+                if pd.notna(last_date):
+                    start = (
+                        last_date +
+                        pd.Timedelta(days=1)
+                    ).strftime("%Y-%m-%d")
+                else:
+                    start = config["data"]["start_date"]
+
+            else:
+                start = config["data"]["start_date"]
+
+        else:
+            start = config["data"]["start_date"]
+
+        end = (
+            pd.Timestamp.today()
+            + pd.Timedelta(days=1)
+        ).strftime("%Y-%m-%d")
+
+        logger.info(
+            f"Updating {name}: {start} → {end}"
+        )
+
+        df = yf.download(
+            symbol,
+            start=start,
+            end=end,
+            progress=False
+        )
+
+        if df.empty:
+            logger.info(
+                f"No new data for {name}"
+            )
+            continue
+
+        if isinstance(
+            df.columns,
+            pd.MultiIndex
+        ):
+            df.columns = (
+                df.columns
+                .get_level_values(0)
             )
 
-            if df.empty:
-                logger.warning(f"No data found for {name}")
-                continue
+        df.reset_index(inplace=True)
 
-            df.to_csv(
-                os.path.join(save_folder, f"{name}.csv")
+        if existing is not None:
+
+            df["Date"] = pd.to_datetime(
+                df["Date"],
+                errors="coerce"
             )
 
-            logger.info(f"Saved {name}.csv")
+            df = pd.concat(
+                [existing, df],
+                ignore_index=True
+            )
 
-        except Exception as e:
+            df = df.drop_duplicates(
+                subset=["Date"],
+                keep="last"
+            )
 
-            logger.error(f"Error downloading {name}: {e}")
+            df = df.sort_values(
+                "Date"
+            ).reset_index(drop=True)
+
+        df.to_csv(
+            filepath,
+            index=False
+        )
+
+        logger.info(
+            f"Saved {filepath}"
+        )
 
     logger.info("Macro data downloaded successfully.")

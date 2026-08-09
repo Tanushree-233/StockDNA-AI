@@ -35,6 +35,19 @@ def merge_all():
         ignore_index=True
     )
 
+    master["Date"] = pd.to_datetime(
+        master["Date"]
+    )
+
+    master = master.sort_values(
+        ["Ticker", "Date"]
+    ).reset_index(drop=True)
+
+    master.to_csv(
+        "data/final/master_dataset.csv",
+        index=False
+    )
+
     master.to_csv(
         "data/final/master_dataset.csv",
         index=False
