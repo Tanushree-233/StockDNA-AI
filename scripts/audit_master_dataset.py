@@ -2,7 +2,7 @@ import pandas as pd
 
 FILE = "data/final/master_dataset.csv"
 
-df = pd.read_csv(FILE)
+df = pd.read_csv(FILE, parse_dates=["Date"])
 
 print("=" * 60)
 print("MASTER DATASET AUDIT")

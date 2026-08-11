@@ -25,7 +25,7 @@ print("=" * 60)
 
 df = pd.read_csv(INPUT)
 
-df["Date"] = pd.to_datetime(df["Date"])
+df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
 df["Ticker"] = df["Ticker"].astype(str)
 
 print("\nOriginal shape:", df.shape)
@@ -34,16 +34,23 @@ print("\nOriginal shape:", df.shape)
 # 2. SORT
 # ============================================================
 
-df = df.sort_values(
-    ["Ticker", "Date"]
-).reset_index(drop=True)
+df = (
+    df.sort_values(["Ticker", "Date"])
+      .reset_index(drop=True)
+)
 
 # ============================================================
-# 3. REMOVE HOLD
+# 3. REMOVE INVALID DATES
+# ============================================================
+
+df = df.dropna(subset=["Date"]).copy()
+
+# ============================================================
+# 4. TARGET CHECK
 # ============================================================
 
 print("\nOriginal target distribution:")
-print(df["Target"].value_counts())
+print(df["Target"].value_counts(dropna=False))
 
 # Keep only BUY and SELL
 df = df[
@@ -54,7 +61,7 @@ print("\nAfter removing HOLD:")
 print(df["Target"].value_counts())
 
 # ============================================================
-# 4. CONVERT TARGET
+# 5. CONVERT TARGET
 # ============================================================
 
 label_map = {
@@ -68,14 +75,8 @@ if df["Target"].isna().any():
     raise ValueError("Target contains invalid labels.")
 
 # ============================================================
-# 5. COLUMNS TO DROP
+# 6. DATE COLUMNS
 # ============================================================
-
-DROP_COLUMNS = [
-    "Target",
-    "Target_Return",
-    "Ticker",
-]
 
 DATE_COLUMNS = [
     "Date",
@@ -85,13 +86,17 @@ DATE_COLUMNS = [
     "EarningsAnnouncementDate",
 ]
 
-DROP_COLUMNS = DROP_COLUMNS + DATE_COLUMNS
+# Only use columns that actually exist
+DATE_COLUMNS = [
+    col for col in DATE_COLUMNS
+    if col in df.columns
+]
 
 # ============================================================
-# 6. FINANCIAL FEATURES
+# 7. FINANCIAL FEATURES
 # ============================================================
 
-financial_features = [
+FINANCIAL_FEATURES = [
     "Revenue",
     "OperatingIncome",
     "NetIncome",
@@ -113,19 +118,15 @@ financial_features = [
     "FCFGrowth",
 ]
 
-financial_features = [
-    c for c in financial_features
-    if c in df.columns
+FINANCIAL_FEATURES = [
+    col
+    for col in FINANCIAL_FEATURES
+    if col in df.columns
 ]
 
-# ============================================================
-# 7. FINANCIAL MISSING INDICATORS
-# ============================================================
-
-print("\nCreating financial missing indicators...")
-
-for col in financial_features:
-    df[f"{col}_Missing"] = df[col].isna().astype(int)
+print("\nFinancial features:")
+for col in FINANCIAL_FEATURES:
+    print("-", col)
 
 # ============================================================
 # 8. RESPECT ANNOUNCEMENT DATE
@@ -133,27 +134,62 @@ for col in financial_features:
 
 if "AnnouncementDate" in df.columns:
 
+    print("\nApplying announcement-date protection...")
+
     df["AnnouncementDate"] = pd.to_datetime(
         df["AnnouncementDate"],
         errors="coerce"
     )
 
-    for col in financial_features:
+    invalid_mask = (
+        df["AnnouncementDate"].notna()
+        & (df["Date"] < df["AnnouncementDate"])
+    )
 
-        invalid = (
-            df["AnnouncementDate"].notna()
-            & (df["Date"] < df["AnnouncementDate"])
-        )
+    print(
+        "Rows before financial announcement:",
+        invalid_mask.sum()
+    )
 
-        df.loc[invalid, col] = np.nan
+    # IMPORTANT:
+    # Do not allow any financial feature from a future
+    # announcement to be visible.
+    for col in FINANCIAL_FEATURES:
+        df.loc[invalid_mask, col] = np.nan
 
+    # Forward-fill only information that has already
+    # become available.
+    for col in FINANCIAL_FEATURES:
         df[col] = (
             df.groupby("Ticker")[col]
-            .ffill()
+              .ffill()
         )
 
+else:
+    print(
+        "\nWARNING: AnnouncementDate column not found."
+    )
+
 # ============================================================
-# 9. DEFINE EXTERNAL FEATURES
+# 9. CREATE FINANCIAL MISSING INDICATORS
+# ============================================================
+
+print("\nCreating financial availability indicators...")
+
+MISSING_FEATURES = []
+
+for col in FINANCIAL_FEATURES:
+
+    missing_col = f"{col}_Missing"
+
+    df[missing_col] = (
+        df[col].isna().astype(int)
+    )
+
+    MISSING_FEATURES.append(missing_col)
+
+# ============================================================
+# 10. EXTERNAL FEATURES
 # ============================================================
 
 EXTERNAL_FEATURES = [
@@ -165,54 +201,97 @@ EXTERNAL_FEATURES = [
 ]
 
 EXTERNAL_FEATURES = [
-    c for c in EXTERNAL_FEATURES
-    if c in df.columns
+    col
+    for col in EXTERNAL_FEATURES
+    if col in df.columns
 ]
 
 print("\nExternal features:")
+
 for col in EXTERNAL_FEATURES:
     print("-", col)
 
+if len(EXTERNAL_FEATURES) == 0:
+    raise ValueError(
+        "No external features were found."
+    )
+
 # ============================================================
-# 10. ALL MODEL FEATURES
+# 11. COLUMNS THAT MUST NEVER BE FEATURES
+# ============================================================
+
+DROP_COLUMNS = [
+    "Target",
+    "Target_Return",
+    "Ticker",
+]
+
+DROP_COLUMNS.extend(DATE_COLUMNS)
+
+# ============================================================
+# 12. ALL MODEL FEATURES
 # ============================================================
 
 feature_columns = [
-    c for c in df.columns
-    if c not in DROP_COLUMNS
+    col
+    for col in df.columns
+    if col not in DROP_COLUMNS
 ]
 
 # Keep numeric columns only
 feature_columns = [
-    c for c in feature_columns
-    if pd.api.types.is_numeric_dtype(df[c])
+    col
+    for col in feature_columns
+    if pd.api.types.is_numeric_dtype(df[col])
 ]
+
+# Safety check
+for forbidden in [
+    "Target",
+    "Target_Return",
+]:
+    if forbidden in feature_columns:
+        raise ValueError(
+            f"LEAKAGE ERROR: {forbidden} is still a feature."
+        )
 
 print("\nTotal features:", len(feature_columns))
 
 # ============================================================
-# 11. INTERNAL FEATURES
+# 13. INTERNAL FEATURES
 # ============================================================
 
 internal_features = [
-    c for c in feature_columns
-    if c not in EXTERNAL_FEATURES
+    col
+    for col in feature_columns
+    if col not in EXTERNAL_FEATURES
 ]
 
+print(
+    "Internal feature count:",
+    len(internal_features)
+)
+
+print(
+    "External feature count:",
+    len(EXTERNAL_FEATURES)
+)
+
 # ============================================================
-# 12. FINAL CLEANUP
+# 14. CREATE X AND y
 # ============================================================
 
 X = df[feature_columns].copy()
 y = df["Target"].copy()
 
+# Replace infinite values
 X = X.replace(
     [np.inf, -np.inf],
     np.nan
 )
 
 # ============================================================
-# 13. TIME-BASED SPLIT
+# 15. TIME-BASED SPLIT
 # ============================================================
 
 train_mask = (
@@ -223,6 +302,14 @@ test_mask = (
     df["Date"] >= pd.Timestamp(TEST_START)
 )
 
+# Make sure the split does not overlap
+if (
+    train_mask & test_mask
+).any():
+    raise ValueError(
+        "Training and testing periods overlap."
+    )
+
 X_train = X.loc[train_mask].copy()
 X_test = X.loc[test_mask].copy()
 
@@ -230,46 +317,81 @@ y_train = y.loc[train_mask].copy()
 y_test = y.loc[test_mask].copy()
 
 # ============================================================
-# 14. SPLIT INTERNAL / EXTERNAL
+# 16. SPLIT INTERNAL / EXTERNAL
 # ============================================================
 
-internal_X_train = X_train[internal_features].copy()
-internal_X_test = X_test[internal_features].copy()
+internal_X_train = (
+    X_train[internal_features]
+    .copy()
+)
 
-external_X_train = X_train[EXTERNAL_FEATURES].copy()
-external_X_test = X_test[EXTERNAL_FEATURES].copy()
+internal_X_test = (
+    X_test[internal_features]
+    .copy()
+)
+
+external_X_train = (
+    X_train[EXTERNAL_FEATURES]
+    .copy()
+)
+
+external_X_test = (
+    X_test[EXTERNAL_FEATURES]
+    .copy()
+)
 
 # ============================================================
-# 15. TRAINING MEDIANS
+# 17. TRAINING MEDIANS
 # ============================================================
 
-internal_medians = internal_X_train.median()
-external_medians = external_X_train.median()
-
-internal_X_train = internal_X_train.fillna(
-    internal_medians
+internal_medians = (
+    internal_X_train.median()
 )
 
-internal_X_test = internal_X_test.fillna(
-    internal_medians
+external_medians = (
+    external_X_train.median()
 )
 
-external_X_train = external_X_train.fillna(
-    external_medians
+# Fill using training medians only
+internal_X_train = (
+    internal_X_train
+    .fillna(internal_medians)
 )
 
-external_X_test = external_X_test.fillna(
-    external_medians
+internal_X_test = (
+    internal_X_test
+    .fillna(internal_medians)
 )
 
-internal_X_train = internal_X_train.fillna(0)
-internal_X_test = internal_X_test.fillna(0)
+external_X_train = (
+    external_X_train
+    .fillna(external_medians)
+)
 
-external_X_train = external_X_train.fillna(0)
-external_X_test = external_X_test.fillna(0)
+external_X_test = (
+    external_X_test
+    .fillna(external_medians)
+)
+
+# Any remaining NaN → 0
+internal_X_train = (
+    internal_X_train.fillna(0)
+)
+
+internal_X_test = (
+    internal_X_test.fillna(0)
+)
+
+external_X_train = (
+    external_X_train.fillna(0)
+)
+
+external_X_test = (
+    external_X_test.fillna(0)
+)
 
 # ============================================================
-# 16. VALIDATION
+# 18. VALIDATION
 # ============================================================
 
 print("\n" + "=" * 60)
@@ -277,30 +399,100 @@ print("BINARY TRAIN / TEST SPLIT")
 print("=" * 60)
 
 print("\nTraining:")
-print("Internal:", internal_X_train.shape)
-print("External:", external_X_train.shape)
-print("Target:", y_train.shape)
+print(
+    "Internal:",
+    internal_X_train.shape
+)
+
+print(
+    "External:",
+    external_X_train.shape
+)
+
+print(
+    "Target:",
+    y_train.shape
+)
 
 print("\nTesting:")
-print("Internal:", internal_X_test.shape)
-print("External:", external_X_test.shape)
-print("Target:", y_test.shape)
+
+print(
+    "Internal:",
+    internal_X_test.shape
+)
+
+print(
+    "External:",
+    external_X_test.shape
+)
+
+print(
+    "Target:",
+    y_test.shape
+)
 
 print("\nTraining target:")
 print(
-    y_train.value_counts().sort_index()
+    y_train.value_counts()
+    .sort_index()
 )
 
 print("\nTesting target:")
 print(
-    y_test.value_counts().sort_index()
+    y_test.value_counts()
+    .sort_index()
 )
 
 print("\nTarget mapping:")
 print("0 = SELL")
 print("1 = BUY")
 
+# ============================================================
+# 19. CHECK FOR LEAKAGE
+# ============================================================
+
+print("\n" + "=" * 60)
+print("FEATURE LEAKAGE CHECK")
+print("=" * 60)
+
+leakage_columns = [
+    "Target",
+    "Target_Return",
+]
+
+found_leakage = [
+    col
+    for col in leakage_columns
+    if col in internal_features
+    or col in EXTERNAL_FEATURES
+]
+
+if found_leakage:
+
+    print(
+        "WARNING: Leakage columns found:"
+    )
+
+    for col in found_leakage:
+        print("-", col)
+
+    raise ValueError(
+        "Feature leakage detected."
+    )
+
+else:
+
+    print(
+        "PASS: Target and Target_Return "
+        "are not model features."
+    )
+
+# ============================================================
+# 20. CHECK REMAINING NaNs
+# ============================================================
+
 print("\nRemaining NaNs:")
+
 print(
     "Internal train:",
     internal_X_train.isna().sum().sum()
@@ -322,7 +514,7 @@ print(
 )
 
 # ============================================================
-# 17. SAVE INTERNAL DATA
+# 21. SAVE INTERNAL DATA
 # ============================================================
 
 joblib.dump(
@@ -356,7 +548,7 @@ joblib.dump(
 )
 
 # ============================================================
-# 18. SAVE EXTERNAL DATA
+# 22. SAVE EXTERNAL DATA
 # ============================================================
 
 joblib.dump(
@@ -390,7 +582,7 @@ joblib.dump(
 )
 
 # ============================================================
-# 19. COMPLETE
+# 23. FINAL REPORT
 # ============================================================
 
 print("\n" + "=" * 60)
@@ -398,18 +590,41 @@ print("BINARY DATA PREPARATION COMPLETE")
 print("=" * 60)
 
 print("\nSaved internal files:")
-print("models/internal_X_train.pkl")
-print("models/internal_X_test.pkl")
-print("models/internal_y_train.pkl")
-print("models/internal_y_test.pkl")
+print(
+    "models/internal_X_train.pkl"
+)
+print(
+    "models/internal_X_test.pkl"
+)
+print(
+    "models/internal_y_train.pkl"
+)
+print(
+    "models/internal_y_test.pkl"
+)
 
 print("\nSaved external files:")
-print("models/external_X_train.pkl")
-print("models/external_X_test.pkl")
-print("models/external_y_train.pkl")
-print("models/external_y_test.pkl")
+print(
+    "models/external_X_train.pkl"
+)
+print(
+    "models/external_X_test.pkl"
+)
+print(
+    "models/external_y_train.pkl"
+)
+print(
+    "models/external_y_test.pkl"
+)
 
-print("\nInternal feature count:", len(internal_features))
-print("External feature count:", len(EXTERNAL_FEATURES))
+print(
+    "\nInternal feature count:",
+    len(internal_features)
+)
+
+print(
+    "External feature count:",
+    len(EXTERNAL_FEATURES)
+)
 
 print("\nREADY FOR BINARY MODEL TRAINING.")
