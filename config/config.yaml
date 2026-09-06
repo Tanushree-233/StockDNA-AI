@@ -7,8 +7,27 @@ data:
 
 paths:
   companies: "data/reference/companies.csv"
-  prices: "data/raw/prices"
-  market: "data/raw/market"
+
+  raw:
+    prices: "data/raw/prices"
+    market: "data/raw/market"
+    macro: "data/raw/macro"
+    fundamentals: "data/raw/fundamentals"
+    earnings: "data/raw/earnings"
+    internal: "data/raw/internal"
+
+  processed:
+    prices: "data/processed/prices"
+    market: "data/processed/market"
+    macro: "data/processed/macro"
+    fundamentals: "data/processed/fundamentals"
+    earnings: "data/processed/earnings"
+    internal: "data/processed/internal"
+    merged: "data/processed/merged"
+    features: "data/processed/features"
+
+  final:
+    master_dataset: "data/final/master_dataset.csv"
 
 market:
   nifty: "^NSEI"

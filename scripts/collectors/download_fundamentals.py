@@ -12,7 +12,7 @@ def download_fundamentals():
 
     companies = pd.read_csv(config["paths"]["companies"])
 
-    save_folder = "data/raw/fundamentals"
+    save_folder = config["paths"]["raw"]["fundamentals"]
 
     os.makedirs(save_folder, exist_ok=True)
 

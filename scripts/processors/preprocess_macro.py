@@ -1,15 +1,21 @@
 import os
 import pandas as pd
 
+from scripts.utils.config import load_config
 from scripts.utils.logger import logger
 
 
 def preprocess_macro():
 
-    raw_folder = "data/raw/macro"
-    processed_folder = "data/processed/macro"
+    config = load_config()
 
-    os.makedirs(processed_folder, exist_ok=True)
+    raw_folder = config["paths"]["raw"]["macro"]
+    processed_folder = config["paths"]["processed"]["macro"]
+
+    os.makedirs(
+        processed_folder,
+        exist_ok=True
+    )
 
     for file in os.listdir(raw_folder):
 
@@ -18,7 +24,10 @@ def preprocess_macro():
 
         logger.info(f"Processing {file}")
 
-        filepath = os.path.join(raw_folder, file)
+        filepath = os.path.join(
+            raw_folder,
+            file
+        )
 
         df = pd.read_csv(filepath)
 
@@ -28,16 +37,43 @@ def preprocess_macro():
         # Remove empty rows
         df = df.dropna(how="all")
 
-        # Fill missing values
-        df = df.ffill()
-
         # Clean column names
         df.columns = df.columns.str.strip()
 
-        output = os.path.join(processed_folder, file)
+        # Convert and normalize Date column
+        if "Date" in df.columns:
 
-        df.to_csv(output, index=False)
+            df["Date"] = pd.to_datetime(
+                df["Date"],
+                errors="coerce"
+            )
 
-        logger.info(f"Saved cleaned {file}")
+            df = df.dropna(
+                subset=["Date"]
+            )
 
-    logger.info("Macro preprocessing completed.")
+            df = df.sort_values(
+                "Date"
+            )
+
+        output = os.path.join(
+            processed_folder,
+            file
+        )
+
+        df.to_csv(
+            output,
+            index=False
+        )
+
+        logger.info(
+            f"Saved cleaned {file}"
+        )
+
+    logger.info(
+        "Macro preprocessing completed."
+    )
+
+
+if __name__ == "__main__":
+    preprocess_macro()

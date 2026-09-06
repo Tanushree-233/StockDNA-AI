@@ -10,7 +10,7 @@ def download_macro():
 
     config = load_config()
 
-    save_folder = "data/raw/macro"
+    save_folder = config["paths"]["raw"]["macro"]
 
     os.makedirs(save_folder, exist_ok=True)
 

@@ -10,7 +10,7 @@ def update_market():
 
     config = load_config()
 
-    market_folder = config["paths"]["market"]
+    market_folder = config["paths"]["raw"]["market"]
 
     os.makedirs(
         market_folder,

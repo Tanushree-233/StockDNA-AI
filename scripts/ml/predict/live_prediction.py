@@ -1,12 +1,16 @@
 import sys
 from pathlib import Path
 
-import joblib
 import pandas as pd
 import yfinance as yf
 
-# Allow imports from the project root
+
+# ============================================================
+# PROJECT ROOT
+# ============================================================
+
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
+
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from scripts.ml.predict.predict_stock import predict
@@ -22,6 +26,9 @@ TICKERS = {
     "TCS": "TCS.NS",
 }
 
+NIFTY_TICKER = "^NSEI"
+VIX_TICKER = "^INDIAVIX"
+
 HISTORY_PERIOD = "2y"
 
 OUTPUT = (
@@ -31,11 +38,6 @@ OUTPUT = (
     / "internal"
     / "live_predictions.csv"
 )
-
-
-# ============================================================
-# LOAD EXISTING FEATURE DATA
-# ============================================================
 
 FEATURE_DATA = (
     PROJECT_ROOT
@@ -47,7 +49,7 @@ FEATURE_DATA = (
 
 
 # ============================================================
-# DOWNLOAD LATEST MARKET DATA
+# DOWNLOAD MARKET DATA
 # ============================================================
 
 def download_market_data(ticker):
@@ -78,6 +80,128 @@ def download_market_data(ticker):
 
 
 # ============================================================
+# DOWNLOAD NIFTY + VIX DATA
+# ============================================================
+
+def download_macro_market_data():
+
+    print("\nDownloading NIFTY 50 data...")
+
+    nifty = yf.download(
+        NIFTY_TICKER,
+        period=HISTORY_PERIOD,
+        auto_adjust=False,
+        progress=False,
+    )
+
+    if nifty.empty:
+        raise ValueError(
+            "No NIFTY 50 data returned."
+        )
+
+    if isinstance(nifty.columns, pd.MultiIndex):
+        nifty.columns = nifty.columns.get_level_values(0)
+
+    nifty = nifty.reset_index()
+
+    nifty["Date"] = pd.to_datetime(
+        nifty["Date"]
+    )
+
+    nifty["NIFTY_Close"] = pd.to_numeric(
+        nifty["Close"],
+        errors="coerce",
+    )
+
+    nifty["NIFTY_Volume"] = pd.to_numeric(
+        nifty["Volume"],
+        errors="coerce",
+    )
+
+    nifty["NIFTY_Return"] = (
+        nifty["NIFTY_Close"].pct_change()
+    )
+
+    nifty = nifty[
+        [
+            "Date",
+            "NIFTY_Close",
+            "NIFTY_Volume",
+            "NIFTY_Return",
+        ]
+    ].copy()
+
+    print("NIFTY 50 data downloaded.")
+
+    # --------------------------------------------------------
+    # India VIX
+    # --------------------------------------------------------
+
+    print("Downloading India VIX data...")
+
+    vix = yf.download(
+        VIX_TICKER,
+        period=HISTORY_PERIOD,
+        auto_adjust=False,
+        progress=False,
+    )
+
+    if vix.empty:
+        raise ValueError(
+            "No India VIX data returned."
+        )
+
+    if isinstance(vix.columns, pd.MultiIndex):
+        vix.columns = vix.columns.get_level_values(0)
+
+    vix = vix.reset_index()
+
+    vix["Date"] = pd.to_datetime(
+        vix["Date"]
+    )
+
+    vix["VIX_Close"] = pd.to_numeric(
+        vix["Close"],
+        errors="coerce",
+    )
+
+    vix["VIX_Change"] = (
+        vix["VIX_Close"].pct_change()
+    )
+
+    vix = vix[
+        [
+            "Date",
+            "VIX_Close",
+            "VIX_Change",
+        ]
+    ].copy()
+
+    print("India VIX data downloaded.")
+
+    # --------------------------------------------------------
+    # Merge NIFTY + VIX
+    # --------------------------------------------------------
+
+    macro = pd.merge(
+        nifty,
+        vix,
+        on="Date",
+        how="outer",
+    )
+
+    macro = (
+        macro
+        .sort_values("Date")
+        .reset_index(drop=True)
+    )
+
+    macro = macro.ffill()
+
+    return macro
+
+
+# ============================================================
 # BUILD TECHNICAL FEATURES
 # ============================================================
 
@@ -97,19 +221,20 @@ def add_technical_features(df):
     df["SMA100"] = close.rolling(100).mean()
     df["SMA200"] = close.rolling(200).mean()
 
+    # EMA
     df["EMA20"] = close.ewm(
         span=20,
-        adjust=False
+        adjust=False,
     ).mean()
 
     df["EMA50"] = close.ewm(
         span=50,
-        adjust=False
+        adjust=False,
     ).mean()
 
     df["EMA100"] = close.ewm(
         span=100,
-        adjust=False
+        adjust=False,
     ).mean()
 
     # RSI
@@ -130,53 +255,54 @@ def add_technical_features(df):
     # MACD
     ema12 = close.ewm(
         span=12,
-        adjust=False
+        adjust=False,
     ).mean()
 
     ema26 = close.ewm(
         span=26,
-        adjust=False
+        adjust=False,
     ).mean()
 
     df["MACD"] = ema12 - ema26
 
     df["MACD_Signal"] = df["MACD"].ewm(
         span=9,
-        adjust=False
+        adjust=False,
     ).mean()
 
     df["MACD_Histogram"] = (
-        df["MACD"] -
-        df["MACD_Signal"]
+        df["MACD"]
+        - df["MACD_Signal"]
     )
 
     # Bollinger Bands
     rolling20 = close.rolling(20)
 
     df["BB_Middle"] = rolling20.mean()
+
     bb_std = rolling20.std()
 
     df["BB_High"] = (
-        df["BB_Middle"] +
-        2 * bb_std
+        df["BB_Middle"]
+        + 2 * bb_std
     )
 
     df["BB_Low"] = (
-        df["BB_Middle"] -
-        2 * bb_std
+        df["BB_Middle"]
+        - 2 * bb_std
     )
 
     # ATR
     high_low = df["High"] - df["Low"]
 
     high_close = (
-        df["High"] -
-        close.shift()
+        df["High"]
+        - close.shift()
     ).abs()
 
     low_close = (
-        df["Low"] -
-        close.shift()
+        df["Low"]
+        - close.shift()
     ).abs()
 
     true_range = pd.concat(
@@ -188,7 +314,11 @@ def add_technical_features(df):
         axis=1,
     ).max(axis=1)
 
-    df["ATR"] = true_range.rolling(14).mean()
+    df["ATR"] = (
+        true_range
+        .rolling(14)
+        .mean()
+    )
 
     # Volatility
     df["Volatility"] = (
@@ -209,15 +339,19 @@ def add_technical_features(df):
 
     # ROC
     df["ROC"] = (
-        (close / close.shift(10)) - 1
+        (close / close.shift(10))
+        - 1
     )
 
     # Volume
     df["Volume_Change"] = volume.pct_change()
+
     df["Lag_Volume_1"] = volume.shift(1)
 
     df["Volume_MA20"] = (
-        volume.rolling(20).mean()
+        volume
+        .rolling(20)
+        .mean()
     )
 
     # Spreads
@@ -243,13 +377,15 @@ def main():
     print("=" * 60)
 
     # --------------------------------------------------------
-    # IMPORTANT
-    #
-    # We use the existing processed dataset for financial,
-    # earnings, NIFTY and VIX features.
-    #
-    # Fresh market prices are added separately.
+    # Load existing processed features
     # --------------------------------------------------------
+
+    if not FEATURE_DATA.exists():
+
+        raise FileNotFoundError(
+            f"Feature dataset not found:\n"
+            f"{FEATURE_DATA}"
+        )
 
     historical = pd.read_csv(
         FEATURE_DATA
@@ -259,7 +395,22 @@ def main():
         historical["Date"]
     )
 
+    # --------------------------------------------------------
+    # Download fresh NIFTY + VIX
+    # --------------------------------------------------------
+
+    macro = download_macro_market_data()
+
+    if macro.empty:
+        raise ValueError(
+            "NIFTY/VIX dataset is empty."
+        )
+
     predictions = []
+
+    # --------------------------------------------------------
+    # Process companies
+    # --------------------------------------------------------
 
     for company, yahoo_ticker in TICKERS.items():
 
@@ -268,7 +419,7 @@ def main():
         )
 
         # ----------------------------------------------------
-        # Download fresh market prices
+        # Download fresh stock market data
         # ----------------------------------------------------
 
         market = download_market_data(
@@ -282,7 +433,7 @@ def main():
         market["Ticker"] = company
 
         # ----------------------------------------------------
-        # Get latest market row
+        # Latest market row
         # ----------------------------------------------------
 
         latest_market = (
@@ -298,9 +449,6 @@ def main():
 
         # ----------------------------------------------------
         # Existing processed features
-        #
-        # We take the most recent historical feature row
-        # available for this ticker.
         # ----------------------------------------------------
 
         existing = historical[
@@ -308,8 +456,10 @@ def main():
         ].sort_values("Date")
 
         if existing.empty:
+
             raise ValueError(
-                f"No existing feature data for {company}"
+                f"No existing feature data "
+                f"for {company}"
             )
 
         latest_existing = (
@@ -319,7 +469,7 @@ def main():
         )
 
         # ----------------------------------------------------
-        # Replace market-derived columns with fresh values
+        # Replace technical columns with fresh data
         # ----------------------------------------------------
 
         technical_columns = [
@@ -332,8 +482,11 @@ def main():
             "Daily_Return",
             "SMA20",
             "SMA50",
+            "SMA100",
+            "SMA200",
             "EMA20",
             "EMA50",
+            "EMA100",
             "RSI",
             "MACD",
             "MACD_Signal",
@@ -348,15 +501,12 @@ def main():
             "Lag_Close_5",
             "Momentum_5",
             "Momentum_10",
+            "Momentum_20",
             "ROC",
             "Volume_Change",
-            "High_Low_Spread",
-            "SMA100",
-            "SMA200",
-            "EMA100",
-            "Momentum_20",
             "Lag_Volume_1",
             "Volume_MA20",
+            "High_Low_Spread",
             "Open_Close_Spread",
         ]
 
@@ -368,8 +518,79 @@ def main():
                     latest_market[column].iloc[0]
                 )
 
+        # ----------------------------------------------------
+        # Add latest NIFTY + VIX features
+        # ----------------------------------------------------
+
+        macro_before_or_equal = macro[
+            macro["Date"] <= latest_date
+        ]
+
+        if macro_before_or_equal.empty:
+
+            raise ValueError(
+                f"No NIFTY/VIX data available "
+                f"for {company}."
+            )
+
+        latest_macro = (
+            macro_before_or_equal
+            .sort_values("Date")
+            .tail(1)
+            .iloc[0]
+        )
+
+        latest_existing[
+            "NIFTY_Close"
+        ] = latest_macro["NIFTY_Close"]
+
+        latest_existing[
+            "NIFTY_Volume"
+        ] = latest_macro["NIFTY_Volume"]
+
+        latest_existing[
+            "NIFTY_Return"
+        ] = latest_macro["NIFTY_Return"]
+
+        latest_existing[
+            "VIX_Close"
+        ] = latest_macro["VIX_Close"]
+
+        latest_existing[
+            "VIX_Change"
+        ] = latest_macro["VIX_Change"]
+
+        # ----------------------------------------------------
+        # Update identifiers
+        # ----------------------------------------------------
+
         latest_existing["Date"] = latest_date
         latest_existing["Ticker"] = company
+
+        # ----------------------------------------------------
+        # Safety check
+        # ----------------------------------------------------
+
+        required_macro_features = [
+            "NIFTY_Close",
+            "NIFTY_Volume",
+            "NIFTY_Return",
+            "VIX_Close",
+            "VIX_Change",
+        ]
+
+        missing_macro = [
+            column
+            for column in required_macro_features
+            if column not in latest_existing.columns
+        ]
+
+        if missing_macro:
+
+            raise ValueError(
+                "Missing live macro features:\n"
+                + "\n".join(missing_macro)
+            )
 
         # ----------------------------------------------------
         # Run model
@@ -387,22 +608,26 @@ def main():
 
     final = pd.concat(
         predictions,
-        ignore_index=True
+        ignore_index=True,
     )
 
     # --------------------------------------------------------
-    # Save
+    # Save predictions
     # --------------------------------------------------------
 
     OUTPUT.parent.mkdir(
         parents=True,
-        exist_ok=True
+        exist_ok=True,
     )
 
     final.to_csv(
         OUTPUT,
-        index=False
+        index=False,
     )
+
+    # --------------------------------------------------------
+    # Display
+    # --------------------------------------------------------
 
     print("\n" + "=" * 60)
     print("LIVE PREDICTIONS")

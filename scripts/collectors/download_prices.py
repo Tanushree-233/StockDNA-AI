@@ -8,7 +8,6 @@ from tqdm import tqdm
 from scripts.utils.config import load_config
 from scripts.utils.logger import logger
 
-import pandas as pd
 
 
 def download_single_stock(
@@ -43,7 +42,7 @@ def download_prices():
 
     companies = pd.read_csv(config["paths"]["companies"])
 
-    save_folder = config["paths"]["prices"]
+    save_folder = config["paths"]["raw"]["prices"]
     os.makedirs(save_folder, exist_ok=True)
 
     start = config["data"]["start_date"]
@@ -141,7 +140,7 @@ def download_prices():
                 )
 
             df.to_csv(filepath, index=False)
-            df.to_csv(filepath)
+            
 
             logger.info(f"Saved {filename}")
 
