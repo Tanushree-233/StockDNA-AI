@@ -1,27 +1,10 @@
-import sys
-import os
 import pandas as pd
 
-ML_PATH = os.path.abspath(
-    os.path.join(
-        os.path.dirname(__file__),
-        "..",
-        "scripts",
-        "ml"
-    )
-)
-
-if ML_PATH not in sys.path:
-    sys.path.insert(0, ML_PATH)
+from scripts.ml.predict import predict
 
 
-from predict_pipeline import predict
+def classify_data(df: pd.DataFrame) -> pd.DataFrame:
 
-def classify_data(
-    df: pd.DataFrame,
-    model_name: str = "xgboost",
-    version: int = None
-) -> pd.DataFrame:
     if df is None or df.empty:
         raise ValueError(
             "Cannot classify an empty dataset."
@@ -47,24 +30,18 @@ def classify_data(
             f"Missing required columns: {missing_columns}"
         )
 
-    # Make a copy so the original data is not modified
     data = df.copy()
 
-    # Make sure Date is datetime
-    data["Date"] = pd.to_datetime(data["Date"])
+    data["Date"] = pd.to_datetime(
+        data["Date"]
+    )
 
-    # Make sure data is chronologically ordered
     data = (
         data
         .sort_values("Date")
         .reset_index(drop=True)
     )
 
-    # Run existing ML prediction pipeline
-    predictions = predict(
-        data,
-        model_name=model_name,
-        version=version
-    )
+    predictions = predict(data)
 
     return predictions

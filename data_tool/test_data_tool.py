@@ -47,10 +47,7 @@ def main():
     print("\nFirst 5 rows:")
     print(df.head().to_string(index=False))
 
-    result = run_data_tool(
-        df,
-        model_name="xgboost"
-    )
+    result = run_data_tool(df)
 
 
     print("\n========================================")
