@@ -14,10 +14,7 @@ def get_price_features(ticker: str):
     df = download_single_stock(ticker)
 
     if df.empty:
-        raise ValueError("Ticker not found.")
-
-    if df.empty:
-        raise ValueError(f"No data found for {ticker}")
+        raise ValueError(f"No price data found for ticker: {ticker}")
 
     # Ensure Date column is datetime
     df["Date"] = pd.to_datetime(df["Date"])

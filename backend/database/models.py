@@ -7,8 +7,10 @@ from sqlalchemy import (
     Float,
     DateTime,
     Date,
-    UniqueConstraint
+    UniqueConstraint,
+    ForeignKey
 )
+from sqlalchemy.orm import relationship
 
 from backend.database.database import Base
 
@@ -23,8 +25,16 @@ class PredictionHistory(Base):
         index=True
     )
 
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id"),
+        nullable=True,
+        index=True
+    )
+
     ticker = Column(
-        String
+        String,
+        nullable=False
     )
 
     company = Column(
@@ -32,7 +42,8 @@ class PredictionHistory(Base):
     )
 
     prediction = Column(
-        String
+        String,
+        nullable=False
     )
 
     confidence = Column(
@@ -43,10 +54,38 @@ class PredictionHistory(Base):
         Float
     )
 
+    probabilities = Column(
+        String,
+        nullable=True
+    )
+
+    primary_driver = Column(
+        String,
+        nullable=True
+    )
+
+    internal_percentage = Column(
+        Float,
+        nullable=True
+    )
+
+    external_percentage = Column(
+        Float,
+        nullable=True
+    )
+
+    model_version = Column(
+        String,
+        default="1.0.0",
+        nullable=True
+    )
+
     created_at = Column(
         DateTime,
         default=datetime.utcnow
     )
+
+    user = relationship("User", back_populates="predictions")
 
 
 class User(Base):
@@ -80,6 +119,8 @@ class User(Base):
         DateTime,
         default=datetime.utcnow
     )
+
+    predictions = relationship("PredictionHistory", back_populates="user", cascade="all, delete-orphan")
 
 
 class StockData(Base):

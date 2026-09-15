@@ -1,0 +1,64 @@
+{
+  "model_version": "1.0.0",
+  "model_type": "XGBClassifier",
+  "objective": "multi:softprob",
+  "num_classes": 3,
+  "test_period": "2025-01-02 to 2025-12-19",
+  "test_sample_count": 717,
+  "metrics": {
+    "accuracy": 0.3445,
+    "balanced_accuracy": 0.3418,
+    "macro_precision": 0.3162,
+    "macro_recall": 0.3418,
+    "macro_f1": 0.3140,
+    "weighted_f1": 0.3403,
+    "per_class": {
+      "SELL": {
+        "precision": 0.1471,
+        "recall": 0.1397,
+        "f1": 0.1433,
+        "support": 179
+      },
+      "HOLD": {
+        "precision": 0.5050,
+        "recall": 0.4137,
+        "f1": 0.4548,
+        "support": 365
+      },
+      "BUY": {
+        "precision": 0.2965,
+        "recall": 0.4740,
+        "f1": 0.3648,
+        "support": 173
+      }
+    },
+    "confusion_matrix": {
+      "rows_are_actual": ["SELL", "HOLD", "BUY"],
+      "columns_are_predicted": ["SELL", "HOLD", "BUY"],
+      "matrix": [
+        [25, 92, 62],
+        [83, 151, 131],
+        [39, 52, 82]
+      ]
+    }
+  },
+  "backtest_summary": {
+    "long_trades": 300,
+    "win_rate_pct": 55.67,
+    "stacked_cumulative_return_pct": 35.75,
+    "stacked_max_drawdown_pct": -70.36,
+    "stacked_sharpe": 0.16,
+    "daily_portfolio_cumulative_return_pct": -1.96,
+    "daily_portfolio_max_drawdown_pct": -21.71,
+    "daily_portfolio_sharpe": -0.02,
+    "benchmark_buy_and_hold_return_pct": -2.66,
+    "benchmark_max_drawdown_pct": -19.85
+  },
+  "xai_summary": {
+    "mean_internal_attribution_pct": 22.27,
+    "mean_external_attribution_pct": 77.73,
+    "top_internal_feature": "EPS_Surprise",
+    "top_external_feature": "VIX_Level",
+    "internal_features_in_top_5": 2
+  }
+}

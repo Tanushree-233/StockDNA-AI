@@ -1,0 +1,13 @@
+Model,Split,SELL_True_SELL_Pred,SELL_True_HOLD_Pred,SELL_True_BUY_Pred,HOLD_True_SELL_Pred,HOLD_True_HOLD_Pred,HOLD_True_BUY_Pred,BUY_True_SELL_Pred,BUY_True_HOLD_Pred,BUY_True_BUY_Pred
+Always_HOLD,Validation,0,163,0,0,360,0,0,194,0
+Always_HOLD,Test,0,179,0,0,365,0,0,173,0
+Majority_Class,Validation,0,163,0,0,360,0,0,194,0
+Majority_Class,Test,0,179,0,0,365,0,0,173,0
+Stratified_Random,Validation,32,72,59,94,170,96,51,98,45
+Stratified_Random,Test,49,82,48,90,183,92,38,75,60
+LogisticRegression,Validation,33,94,36,65,209,86,47,105,42
+LogisticRegression,Test,31,105,43,45,210,110,18,90,65
+RandomForest,Validation,47,100,16,125,188,47,69,101,24
+RandomForest,Test,18,126,35,48,234,83,30,80,63
+XGBoost,Validation,58,77,28,113,192,55,60,94,40
+XGBoost,Test,20,91,68,94,131,140,38,39,96

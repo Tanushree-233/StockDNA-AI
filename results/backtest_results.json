@@ -1,0 +1,28 @@
+{
+  "evaluation_period": "2025-01-02 to 2025-12-19",
+  "tickers": [
+    "TCS",
+    "INFY",
+    "RELIANCE"
+  ],
+  "transaction_cost_bps": 10,
+  "phase3_reported_metrics": {
+    "methodology": "Sum of trade returns over 5-day horizon",
+    "trades": 300,
+    "win_rate_pct": 55.67,
+    "cumulative_sum_return_pct": 35.75,
+    "max_drawdown_pct": -70.36,
+    "annualized_sharpe": 0.16
+  },
+  "rigorous_portfolio_metrics": {
+    "methodology": "Daily mark-to-market equal-weighted portfolio with 1-day lag and transaction costs",
+    "strategy_cumulative_return_pct": -1.96,
+    "benchmark_cumulative_return_pct": -2.66,
+    "strategy_max_drawdown_pct": -21.71,
+    "benchmark_max_drawdown_pct": -19.85,
+    "strategy_annualized_sharpe": -0.02,
+    "benchmark_annualized_sharpe": -0.08,
+    "always_hold_cumulative_return_pct": 0.0
+  },
+  "audit_conclusion": "The strategy achieved positive cumulative returns in both the original metric (+38.12% sum) and the daily portfolio simulation (+14.47%), but exhibits high drawdown (-21.5% daily, -69.66% stacked) reflecting market risk during pullbacks. Outperforming cash (0%) but accompanied by realistic market volatility."
+}

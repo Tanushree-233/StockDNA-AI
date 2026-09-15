@@ -1,0 +1,7 @@
+Regime,Sample_Count,Sample_Pct,SELL_Pct,HOLD_Pct,BUY_Pct,Forward_5d_Vol_Pct,Accuracy,Balanced_Accuracy,Macro_F1,Mean_Internal_SHAP_Pct,Median_Internal_SHAP_Pct,Mean_External_SHAP_Pct,Median_External_SHAP_Pct
+All Observations (Val+Test),1434,100.0,23.85,50.56,25.59,3.15,0.3745,0.3481,0.3455,22.59,20.09,77.41,79.91
+Post-Earnings 0-1 Days,40,2.79,35.0,25.0,40.0,4.12,0.325,0.3327,0.3248,23.38,25.82,76.62,74.18
+Post-Earnings 2-5 Days,52,3.63,23.08,50.0,26.92,2.8,0.3654,0.3324,0.3359,17.74,17.38,82.26,82.62
+Post-Earnings 6-20 Days,246,17.15,21.54,58.54,19.92,2.75,0.378,0.3398,0.3287,20.98,19.13,79.02,80.87
+Non-Earnings (>20 Days),1096,76.43,24.0,49.73,26.28,3.22,0.3759,0.3508,0.3488,23.15,20.14,76.85,79.86
+Post-Earnings Window (0-5 Days),92,6.42,28.26,39.13,32.61,3.43,0.3478,0.3379,0.3391,20.19,20.1,79.81,79.9

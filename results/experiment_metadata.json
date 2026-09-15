@@ -1,0 +1,91 @@
+{
+  "metadata_version": "1.0.0",
+  "project": "StockDNA-AI",
+  "phase": "Phase 5 — Scientific ML & XAI Validation",
+  "generated_at": "2026-09-15T23:55:00Z",
+  "random_seed": 42,
+  "production_model": {
+    "version": "1.0.0",
+    "architecture": "XGBClassifier",
+    "objective": "multi:softprob",
+    "num_classes": 3,
+    "class_mapping": {
+      "0": "SELL",
+      "1": "HOLD",
+      "2": "BUY"
+    },
+    "hyperparameters": {
+      "n_estimators": 200,
+      "learning_rate": 0.03,
+      "max_depth": 4,
+      "subsample": 0.8,
+      "colsample_bytree": 0.8,
+      "min_child_weight": 3,
+      "eval_metric": "mlogloss",
+      "random_state": 42
+    },
+    "sample_weight_strategy": "balanced"
+  },
+  "dataset": {
+    "source_file": "data/processed/production_dataset.csv",
+    "total_rows": 5250,
+    "tickers": ["INFY", "RELIANCE", "TCS"],
+    "target": {
+      "formula": "Forward_Return_5d[t] = Close[t+5] / Close[t] - 1",
+      "horizon_trading_days": 5,
+      "thresholds": {
+        "BUY": 0.02,
+        "SELL": -0.02
+      },
+      "class_proportions": {
+        "SELL": 0.2236,
+        "HOLD": 0.4857,
+        "BUY": 0.2907
+      }
+    },
+    "splits": {
+      "train": {
+        "start_date": "2018-10-23",
+        "end_date": "2023-12-21",
+        "rows": 3786,
+        "purge_margin_to_next_split": "1 trading bar buffer after 5-day horizon realization"
+      },
+      "validation": {
+        "start_date": "2024-01-02",
+        "end_date": "2024-12-23",
+        "rows": 717,
+        "purge_margin_to_next_split": "1 trading bar buffer after 5-day horizon realization"
+      },
+      "test": {
+        "start_date": "2025-01-02",
+        "end_date": "2025-12-19",
+        "rows": 717,
+        "status": "Strictly untouched during tuning; evaluated ONCE"
+      }
+    }
+  },
+  "feature_contract": {
+    "total_features": 34,
+    "internal_feature_count": 10,
+    "external_feature_count": 24,
+    "candidate_features_evaluated": ["Dist_to_52w_High", "Volatility_Regime_Ratio", "PEAD_Interaction"],
+    "candidate_features_decision": "REJECTED on validation set: Adding candidate features caused overfitting and degraded validation Balanced Accuracy from 0.3651 to 0.3609 (Dist_to_52w_High) and 0.3248 (Vol_Regime)."
+  },
+  "validation_performance": {
+    "accuracy": 0.4045,
+    "balanced_accuracy": 0.3651,
+    "macro_f1": 0.3593,
+    "weighted_f1": 0.4019
+  },
+  "final_test_performance": {
+    "accuracy": 0.3445,
+    "balanced_accuracy": 0.3418,
+    "macro_f1": 0.3140,
+    "weighted_f1": 0.3403,
+    "per_class": {
+      "SELL": {"precision": 0.1471, "recall": 0.1397, "f1": 0.1433, "support": 179},
+      "HOLD": {"precision": 0.5050, "recall": 0.4137, "f1": 0.4548, "support": 365},
+      "BUY": {"precision": 0.2965, "recall": 0.4740, "f1": 0.3648, "support": 173}
+    }
+  }
+}
