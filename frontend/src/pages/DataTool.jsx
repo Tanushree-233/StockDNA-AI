@@ -21,6 +21,7 @@ export default function DataTool() {
   // Cleaner state
   const [cleanerResult, setCleanerResult] = useState(null);
   const [cleanerLoading, setCleanerLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchUniverse();
@@ -29,11 +30,13 @@ export default function DataTool() {
 
   const fetchUniverse = async () => {
     setUniverseLoading(true);
+    setError(null);
     try {
       const data = await api.getUniverse();
       setUniverse(data);
     } catch (err) {
       console.error('Universe fetch error:', err);
+      setError(err.message || 'Failed to load tracked universe.');
     } finally {
       setUniverseLoading(false);
     }
@@ -50,6 +53,7 @@ export default function DataTool() {
       setFactors(data);
     } catch (err) {
       console.error('Factor classify error:', err);
+      setError(err.message || 'Failed to classify factors.');
     } finally {
       setFactorsLoading(false);
     }
@@ -57,6 +61,7 @@ export default function DataTool() {
 
   const handleCustomFactorClassify = (e) => {
     e.preventDefault();
+    setError(null);
     const list = customFeatures
       .split(',')
       .map((s) => s.trim())
@@ -66,18 +71,21 @@ export default function DataTool() {
 
   const handleSentimentAnalyze = async (e) => {
     e.preventDefault();
+    setError(null);
     setSentimentLoading(true);
     try {
       const res = await api.classifySentiment(headline);
       setSentimentResult(res);
     } catch (err) {
       console.error('Sentiment error:', err);
+      setError(err.message || 'Failed to classify financial sentiment.');
     } finally {
       setSentimentLoading(false);
     }
   };
 
   const handleRunSampleCleaning = async () => {
+    setError(null);
     setCleanerLoading(true);
     const sampleRawRecords = [
       { Date: '2024-01-15', Ticker: 'TCS', Close: 3850.5, Volume: 1250000 },
@@ -93,6 +101,7 @@ export default function DataTool() {
       setCleanerResult(res);
     } catch (err) {
       console.error('Cleaner error:', err);
+      setError(err.message || 'Failed to process data bundle.');
     } finally {
       setCleanerLoading(false);
     }
@@ -113,6 +122,33 @@ export default function DataTool() {
           The StockDNA Data Tool is a reusable data aggregation and classification layer that operates independently of the predictive model. It can be consumed by other pipelines through the <code>BaseDataProvider</code> interface.
         </p>
       </div>
+
+      {/* Error Alert */}
+      {error && (
+        <div
+          style={{
+            padding: '1rem 1.25rem',
+            borderRadius: 'var(--radius-md)',
+            background: 'var(--color-sell-bg)',
+            border: '1px solid var(--color-sell-border)',
+            color: 'var(--color-sell)',
+            fontSize: '0.9rem',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <span><strong>Data Tool Notice:</strong> {error}</span>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => setError(null)}
+            style={{ padding: '0.25rem 0.65rem', fontSize: '0.75rem' }}
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
 
       {/* Tabs */}
       <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.5rem', overflowX: 'auto' }}>

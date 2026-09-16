@@ -144,7 +144,7 @@ export default function Predict({ onNavigate, initialTicker = 'TCS', onPredictio
                   </span>
                 </div>
                 <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                  Analysis Timestamp: {new Date(result.timestamp).toLocaleString()} &bull; Model Contract v{result.model_version || '1.0.0'}
+                  Analysis Timestamp: {new Date(result.timestamp).toLocaleString()} &bull; Model Contract v{result.model_version || '1.0.0'} &bull; 34 Scale-Invariant Features (10 Internal / 24 External)
                 </p>
               </div>
 

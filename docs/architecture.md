@@ -98,10 +98,9 @@ The prediction engine produces an institutional 3-class signal for swing horizon
   - Discrete class recommendation (`BUY`, `HOLD`, `SELL`).
   - Prediction confidence score ($C \in [0.0, 1.0]$, representing the maximum softmax class probability).
   - Full probability distribution across all three classes ($\sum P_i = 1.0$).
-- **Features**: A curated set of 49 technical, macro, and fundamental indicators:
-  - Technical: Moving average ratios, RSI(14), MACD histogram, Bollinger %B, ATR, momentum lags.
-  - Macro: NIFTY 50 returns, India VIX levels and percentage changes.
-  - Fundamentals: P/E ratio, Market Cap, Beta, Trailing & Forward EPS, Quarterly Earnings Growth.
+- **Features**: A strictly validated, scale-invariant set of **34 production features**:
+  - **10 INTERNAL Features (Company-Specific)**: `Reported_EPS`, `EPS_Surprise`, `EPS_Surprise_Pct`, `Surprise_Percentile`, `Earnings_Event_Flag`, `Days_Since_Earnings`, `Pre_Earnings_Window`, `Post_Earnings_Drift_Window`, `Earnings_Vol_Regime`, `Consensus_Dispersion`.
+  - **24 EXTERNAL Features (Market, Macro & Technical)**: `Daily_Return`, `Log_Return`, `High_Low_Ratio`, `Close_to_SMA20`, `Close_to_SMA50`, `Close_to_SMA200`, `SMA20_to_SMA50`, `SMA50_to_SMA200`, `RSI_14`, `MACD_Spread_Normalized`, `Normalized_ATR`, `Volume_to_MA20`, `Hist_Vol_20d`, `Hist_Vol_60d`, `Vol_Ratio_20_60`, `NIFTY_Return`, `Rel_Perf_NIFTY_5d`, `Rel_Perf_NIFTY_20d`, `VIX_Level`, `VIX_Daily_Change`, `VIX_5d_Ratio`, `VIX_20d_Ratio`, `VIX_Regime`, `Sector_Relative_Perf`.
 
 ---
 
@@ -181,14 +180,19 @@ backend/
 ```
 
 ### 5.1 Route Overview
-- `POST /api/auth/register`: Create user with hashed credentials.
-- `POST /api/auth/login`: Authenticate and receive signed JWT bearer token.
-- `POST /api/predict`: Execute full ML inference pipeline with SHAP explanation.
-- `GET /api/history`: Retrieve authenticated user's prediction history.
-- `DELETE /api/history/{id}`: Delete a history record belonging to the authenticated user.
-- `POST /api/data-tool/process`: Standalone endpoint to clean and structure raw data.
-- `POST /api/data-tool/sentiment`: Classify text sentiment using financial domain heuristics.
-- `POST /api/data-tool/classify-factor`: Classify a variable into `INTERNAL` or `EXTERNAL`.
+- `POST /auth/register`: Create user with hashed credentials.
+- `POST /auth/login`: Authenticate and receive signed JWT bearer token.
+- `POST /predict`: Execute full ML inference pipeline with SHAP TreeExplainer explanation.
+- `GET /history/`: Retrieve authenticated user's prediction history.
+- `DELETE /history/{id}`: Delete a history record belonging to the authenticated user.
+- `GET /datatool/universe`: Return tracked equities universe metadata.
+- `POST /datatool/process`: Standalone endpoint to clean, deduplicate, and structure raw data.
+- `POST /datatool/sentiment`: Classify text sentiment using financial domain heuristics.
+- `POST /datatool/factors/classify`: Classify variable names into `INTERNAL` or `EXTERNAL`.
+- `GET /research/metrics`: Read-only audited out-of-sample test set metrics.
+- `GET /research/baselines`: Read-only baseline model comparison table across splits.
+- `GET /research/backtest`: Read-only audited daily mark-to-market backtest results.
+- `GET /research/regimes`: Read-only post-earnings observation window analysis.
 
 ---
 
@@ -242,15 +246,23 @@ erDiagram
 
 ## 7. Component 6: Frontend Architecture (`frontend/`)
 
-The frontend is a modern React/Vite single-page application communicating with FastAPI:
-1. **Prediction & Confidence Dashboard**:
-   - Ticker selector driven by centralized company universe.
-   - Real-time prediction banner (BUY/HOLD/SELL) with confidence gauge.
-2. **XAI Factor Decomposition View**:
-   - Donut / split bar chart displaying Internal vs. External percentage split.
-   - Dual-column breakdown of top company-specific vs. top macroeconomic/technical drivers.
-3. **Data Tool Ingestion Studio**:
-   - UI for previewing raw ingested CSVs, executing automated deduplication, and visualizing data cleaning metrics and provenance metadata.
+The frontend is a modern React 18 / Vite single-page application communicating with FastAPI:
+1. **Executive Dashboard (`Home.jsx`)**:
+   - Hero banner and immediate presentation of the Three Core Deliverables.
+   - Audited NSE equities universe cards with quick analysis triggers.
+2. **Stock Movement Prediction (`Predict.jsx`)**:
+   - Real-time prediction banner (`BUY`, `HOLD (KEEP)`, `SELL`) with confidence gauge and 3-class probability distribution.
+   - Decision card disclaimer and metadata line with 34 scale-invariant feature count.
+3. **SHAP Explainability & Factor Attribution (`Explainability.jsx`)**:
+   - Custom SVG Donut chart displaying exact Internal vs. External percentage split.
+   - Ranked dual-column breakdown of top company-specific vs. top macroeconomic/technical drivers.
+   - Bi-directional horizontal SHAP waterfall chart centered around zero ($- \leftarrow 0 \rightarrow +$).
+4. **Independent Data Studio (`DataTool.jsx`)**:
+   - UI with 4 independent operational tabs: Universe Metadata, Factor Taxonomy Classifier, Financial Sentiment, and Data Normalization & Provenance Audit.
+5. **Prediction History & Audit (`History.jsx`)**:
+   - Authenticated, user-isolated audit log with sorting, class filtering, and record deletion.
+6. **Scientific Methodology & Research (`Methodology.jsx`)**:
+   - Target formulation ($h=5$), zero-overlap temporal embargo proof table, 6 baseline model comparison, and audited backtest transparency notes.
 
 ---
 
@@ -270,15 +282,15 @@ sequenceDiagram
     participant XAI as SHAP Service
     participant DB as Database
 
-    UI->>API: POST /api/predict {ticker: "TCS"} [Bearer Token]
+    UI->>API: POST /predict {ticker: "TCS"} [Bearer Token]
     API->>SEC: Validate JWT Token
     SEC-->>API: User Context (user_id)
     API->>PRED: predict(ticker="TCS")
     PRED->>PROV: get_features(ticker="TCS")
     PROV->>DT: process(raw_market_data)
     DT-->>PROV: ProcessedDataBundle (Validated, Scale-Invariant)
-    PROV-->>PRED: Feature Vector (49 features)
-    PRED->>PRED: XGBoost Inference (BUY, 0.84 confidence)
+    PROV-->>PRED: Feature Vector (34 features)
+    PRED->>PRED: XGBoost Inference (BUY, 0.365 confidence)
     PRED->>XAI: get_shap_explanation(model, df)
     XAI->>XAI: Compute SHAP & Decompose (Internal vs External)
     XAI-->>PRED: Attribution Dict

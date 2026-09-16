@@ -1,0 +1,26 @@
+# ==============================================================================
+# Render Blueprint Specification for StockDNA-AI
+# Free-Tier Unified Deployment: React Frontend + FastAPI + XGBoost Model
+# ==============================================================================
+
+services:
+  - type: web
+    name: stockdna-ai
+    env: python
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: "cd frontend && npm install && npm run build && cd .. && pip install -r requirements.txt"
+    startCommand: "python -m uvicorn backend.app:app --host 0.0.0.0 --port $PORT"
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.12
+      - key: APP_ENV
+        value: production
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 120
+      - key: CORS_ORIGINS
+        value: "*"

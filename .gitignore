@@ -9,3 +9,5 @@ __pycache__/
 
 data/raw/
 logs/
+frontend/node_modules/
+*.sqlite3
