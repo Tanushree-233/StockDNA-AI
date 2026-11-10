@@ -2,3 +2,22 @@ ticker,company,sector
 TCS.NS,Tata Consultancy Services,IT
 INFY.NS,Infosys,IT
 RELIANCE.NS,Reliance Industries,Energy
+WIPRO.NS,Wipro,IT
+HCLTECH.NS,HCL Technologies,IT
+HDFCBANK.NS,HDFC Bank,Banking
+ICICIBANK.NS,ICICI Bank,Banking
+HINDUNILVR.NS,Hindustan Unilever,FMCG
+ITC.NS,ITC,FMCG
+NESTLEIND.NS,Nestle India,FMCG
+MARUTI.NS,Maruti Suzuki,Auto
+M&M.NS,Mahindra & Mahindra,Auto
+SUNPHARMA.NS,Sun Pharma,Pharma
+DRREDDY.NS,Dr. Reddy's Laboratories,Pharma
+TATASTEEL.NS,Tata Steel,Metals
+ONGC.NS,ONGC,Energy
+NTPC.NS,NTPC,Power
+POWERGRID.NS,Power Grid Corporation,Power
+LT.NS,Larsen & Toubro,Infrastructure
+ULTRACEMCO.NS,UltraTech Cement,Cement
+BHARTIARTL.NS,Bharti Airtel,Telecom
+ASIANPAINT.NS,Asian Paints,Consumer

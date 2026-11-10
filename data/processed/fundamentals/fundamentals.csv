@@ -2,3 +2,22 @@ Ticker,Company,Sector,Industry,MarketCap,PE_Ratio,BookValue,DividendYield,Beta
 TCS.NS,Tata Consultancy Services Limited,Technology,Information Technology Services,8036134420480,16.148758,303.014,2.89,0.241
 INFY.NS,Infosys Limited,Technology,Information Technology Services,4346524205056,14.229851,233.15013,4.6,0.131
 RELIANCE.NS,Reliance Industries Limited,Energy,Oil & Gas Refining & Marketing,17642282811392,23.630596,668.045,0.45,0.184
+WIPRO.NS,Wipro Limited,Technology,Information Technology Services,1968875503616,15.632365,80.34,4.02,0.261
+HCLTECH.NS,HCL Technologies Limited,Technology,Information Technology Services,3808222248960,20.81669,276.71414,3.41,-0.051
+HDFCBANK.NS,HDFC Bank Limited,Financial Services,Banks - Regional,12317285679104,17.445902,394.839,1.63,0.394
+ICICIBANK.NS,ICICI Bank Limited,Financial Services,Banks - Regional,11410373345280,19.513693,544.189,0.76,0.193
+HINDUNILVR.NS,Hindustan Unilever Limited,Consumer Defensive,Household & Personal Products,4676391534592,44.18961,207.746,2.06,0.314
+ITC.NS,ITC Limited,Consumer Defensive,Tobacco,3493897175040,18.500332,56.869,5.74,-0.067
+NESTLEIND.NS,Nestlé India Limited,Consumer Defensive,Packaged Foods,2502566608896,61.361706,29.984,0.92,0.479
+MARUTI.NS,Maruti Suzuki India Limited,Consumer Cyclical,Auto Manufacturers,4064596197376,30.217611,3467.07,1.08,0.263
+M&M.NS,Mahindra & Mahindra Limited,Consumer Cyclical,Auto Manufacturers,3951228354560,19.05937,875.899,1.0,0.289
+SUNPHARMA.NS,Sun Pharmaceutical Industries Limited,Healthcare,Drug Manufacturers - Specialty & Generic,4569533251584,41.67396,372.649,0.84,0.132
+DRREDDY.NS,Dr. Reddy's Laboratories Limited,Healthcare,Drug Manufacturers - Specialty & Generic,1154624782336,41.146763,463.56,0.58,0.199
+TATASTEEL.NS,Tata Steel Limited,Basic Materials,Steel,2305420165120,19.876345,83.184,2.16,0.805
+ONGC.NS,Oil and Natural Gas Corporation Limited,Energy,Oil & Gas Integrated,2937495224320,5.9369435,318.429,5.67,0.142
+NTPC.NS,NTPC Limited,Utilities,Utilities - Regulated Electric,3187779043328,10.725938,220.166,3.65,0.347
+POWERGRID.NS,Power Grid Corporation of India Limited,Utilities,Utilities - Regulated Electric,2399090769920,14.807693,114.862,4.65,0.203
+LT.NS,Larsen & Toubro Limited,Industrials,Engineering & Construction,5758087856128,32.236942,821.518,0.91,0.495
+ULTRACEMCO.NS,UltraTech Cement Limited,Basic Materials,Building Materials,3609643188224,41.04802,2501.563,1.96,0.462
+BHARTIARTL.NS,Bharti Airtel Limited,Communication Services,Telecom Services,12934604390400,40.7974,259.479,1.16,-0.033
+ASIANPAINT.NS,Asian Paints Limited,Basic Materials,Specialty Chemicals,2405075255296,49.7285,226.787,1.15,0.311
