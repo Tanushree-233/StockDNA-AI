@@ -16,6 +16,7 @@ export default function Navbar({ activePage, onNavigate }) {
     { id: 'home', label: 'Dashboard' },
     { id: 'predict', label: 'Stock Prediction' },
     { id: 'xai', label: 'Explainability' },
+    { id: 'aggregator', label: 'Data Aggregator' },
     { id: 'datatool', label: 'Data Studio' },
     { id: 'history', label: 'History' },
     { id: 'methodology', label: 'Methodology' },

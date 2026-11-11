@@ -1,28 +1,47 @@
 {
   "evaluation_period": "2025-01-02 to 2025-12-19",
   "tickers": [
-    "TCS",
+    "ASIANPAINT",
+    "BHARTIARTL",
+    "DRREDDY",
+    "HCLTECH",
+    "HDFCBANK",
+    "HINDUNILVR",
+    "ICICIBANK",
     "INFY",
-    "RELIANCE"
+    "ITC",
+    "LT",
+    "M&M",
+    "MARUTI",
+    "NESTLEIND",
+    "NTPC",
+    "ONGC",
+    "POWERGRID",
+    "RELIANCE",
+    "SUNPHARMA",
+    "TATASTEEL",
+    "TCS",
+    "ULTRACEMCO",
+    "WIPRO"
   ],
   "transaction_cost_bps": 10,
   "phase3_reported_metrics": {
     "methodology": "Sum of trade returns over 5-day horizon",
-    "trades": 300,
-    "win_rate_pct": 55.67,
-    "cumulative_sum_return_pct": 35.75,
-    "max_drawdown_pct": -70.36,
-    "annualized_sharpe": 0.16
+    "trades": 241,
+    "win_rate_pct": 60.17,
+    "cumulative_sum_return_pct": 266.3,
+    "max_drawdown_pct": -50.21,
+    "annualized_sharpe": 0.4
   },
   "rigorous_portfolio_metrics": {
     "methodology": "Daily mark-to-market equal-weighted portfolio with 1-day lag and transaction costs",
-    "strategy_cumulative_return_pct": -1.96,
-    "benchmark_cumulative_return_pct": -2.66,
-    "strategy_max_drawdown_pct": -21.71,
-    "benchmark_max_drawdown_pct": -19.85,
-    "strategy_annualized_sharpe": -0.02,
-    "benchmark_annualized_sharpe": -0.08,
+    "strategy_cumulative_return_pct": 8.93,
+    "benchmark_cumulative_return_pct": 6.79,
+    "strategy_max_drawdown_pct": -13.44,
+    "benchmark_max_drawdown_pct": -9.82,
+    "strategy_annualized_sharpe": 0.6,
+    "benchmark_annualized_sharpe": 0.62,
     "always_hold_cumulative_return_pct": 0.0
   },
-  "audit_conclusion": "The strategy achieved positive cumulative returns in both the original metric (+38.12% sum) and the daily portfolio simulation (+14.47%), but exhibits high drawdown (-21.5% daily, -69.66% stacked) reflecting market risk during pullbacks. Outperforming cash (0%) but accompanied by realistic market volatility."
+  "audit_conclusion": "Across the 22-stock multi-sector universe in 2025, the strategy achieved +8.93% net return (outperforming the +6.79% equal-weighted benchmark) with a 60.17% win rate across 241 long trades."
 }

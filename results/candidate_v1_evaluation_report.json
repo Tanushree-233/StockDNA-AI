@@ -1,0 +1,275 @@
+{
+  "execution_timestamp": "2026-10-13T16:27:33.662121+00:00",
+  "integrity_suite": "100% PASSED",
+  "tier1_model_selection": {
+    "winning_candidate": "Candidate_4_HistGradientBoosting",
+    "selection_rankings": [
+      {
+        "name": "Candidate_4_HistGradientBoosting",
+        "macro_f1": 0.35251129689963895,
+        "bal_acc": 0.36779753461937337,
+        "acc": 0.39480094875139743
+      },
+      {
+        "name": "Candidate_1_Reg_XGBoost",
+        "macro_f1": 0.3426792249695226,
+        "bal_acc": 0.3551329090352995,
+        "acc": 0.38755816389936565
+      },
+      {
+        "name": "Baseline_XGBoost",
+        "macro_f1": 0.3401159171995079,
+        "bal_acc": 0.35483213514013534,
+        "acc": 0.3937728008397146
+      },
+      {
+        "name": "Candidate_2_Deep_XGBoost",
+        "macro_f1": 0.33898590502900455,
+        "bal_acc": 0.3589218028062066,
+        "acc": 0.39361179094889587
+      },
+      {
+        "name": "Candidate_5_RandomForest",
+        "macro_f1": 0.33327174824691125,
+        "bal_acc": 0.3470947346589844,
+        "acc": 0.3898055039929796
+      },
+      {
+        "name": "Candidate_3_SmoothWeighted_XGBoost",
+        "macro_f1": 0.3328731603735357,
+        "bal_acc": 0.358699237459557,
+        "acc": 0.4338953161475596
+      }
+    ]
+  },
+  "tier2_exploratory_walk_forward": {
+    "baseline": {
+      "Fold 1 (2022)": {
+        "accuracy": 0.3884297520661157,
+        "balanced_accuracy": 0.3907086747507928,
+        "macro_f1": 0.35363464851135107,
+        "sell_f1": 0.17218543046357615,
+        "hold_f1": 0.4331450094161959,
+        "buy_f1": 0.4555735056542811,
+        "sell_precision": 0.26804123711340205,
+        "hold_precision": 0.5275229357798165,
+        "buy_precision": 0.34306569343065696,
+        "sell_recall": 0.12682926829268293,
+        "hold_recall": 0.36741214057507987,
+        "buy_recall": 0.6778846153846154
+      },
+      "Fold 2 (2023)": {
+        "accuracy": 0.4652777777777778,
+        "balanced_accuracy": 0.36398351748847246,
+        "macro_f1": 0.354930175970968,
+        "sell_f1": 0.14358974358974358,
+        "hold_f1": 0.6067677946324388,
+        "buy_f1": 0.31443298969072164,
+        "sell_precision": 0.2692307692307692,
+        "hold_precision": 0.5664488017429193,
+        "buy_precision": 0.291866028708134,
+        "sell_recall": 0.0979020979020979,
+        "hold_recall": 0.6532663316582915,
+        "buy_recall": 0.3407821229050279
+      },
+      "Fold 3 (2024)": {
+        "accuracy": 0.403068340306834,
+        "balanced_accuracy": 0.3651208019733097,
+        "macro_f1": 0.36137800711320006,
+        "sell_f1": 0.2864450127877238,
+        "hold_f1": 0.5235457063711911,
+        "buy_f1": 0.27414330218068533,
+        "sell_precision": 0.24561403508771928,
+        "hold_precision": 0.5220994475138122,
+        "buy_precision": 0.3464566929133858,
+        "sell_recall": 0.34355828220858897,
+        "hold_recall": 0.525,
+        "buy_recall": 0.2268041237113402
+      }
+    },
+    "candidate": {
+      "Fold 1 (2022)": {
+        "accuracy": 0.39669421487603307,
+        "balanced_accuracy": 0.3984785319099197,
+        "macro_f1": 0.3744130532136529,
+        "sell_f1": 0.2422360248447205,
+        "hold_f1": 0.43272727272727274,
+        "buy_f1": 0.4482758620689655,
+        "sell_precision": 0.3333333333333333,
+        "hold_precision": 0.5021097046413502,
+        "buy_precision": 0.34946236559139787,
+        "sell_recall": 0.1902439024390244,
+        "hold_recall": 0.3801916932907348,
+        "buy_recall": 0.625
+      },
+      "Fold 2 (2023)": {
+        "accuracy": 0.44722222222222224,
+        "balanced_accuracy": 0.3884035496988531,
+        "macro_f1": 0.3676347569861287,
+        "sell_f1": 0.1507537688442211,
+        "hold_f1": 0.5546875,
+        "buy_f1": 0.3974630021141649,
+        "sell_precision": 0.26785714285714285,
+        "hold_precision": 0.5756756756756757,
+        "buy_precision": 0.3197278911564626,
+        "sell_recall": 0.1048951048951049,
+        "hold_recall": 0.535175879396985,
+        "buy_recall": 0.5251396648044693
+      },
+      "Fold 3 (2024)": {
+        "accuracy": 0.3947001394700139,
+        "balanced_accuracy": 0.3587729592852608,
+        "macro_f1": 0.3550090448113683,
+        "sell_f1": 0.27860696517412936,
+        "hold_f1": 0.5125348189415042,
+        "buy_f1": 0.27388535031847133,
+        "sell_precision": 0.23430962343096234,
+        "hold_precision": 0.5139664804469274,
+        "buy_precision": 0.35833333333333334,
+        "sell_recall": 0.34355828220858897,
+        "hold_recall": 0.5111111111111111,
+        "buy_recall": 0.22164948453608246
+      }
+    },
+    "aggregate_mean": {
+      "baseline_macro_f1": 0.3566476105318397,
+      "candidate_macro_f1": 0.36568561833705,
+      "baseline_accuracy": 0.4189252900502425,
+      "candidate_accuracy": 0.412872192189423
+    }
+  },
+  "tier3_independent_2024_holdout": {
+    "clean_rows": 717,
+    "baseline_metrics": {
+      "accuracy": 0.403068340306834,
+      "balanced_accuracy": 0.3651208019733097,
+      "macro_f1": 0.36137800711320006,
+      "sell_f1": 0.2864450127877238,
+      "hold_f1": 0.5235457063711911,
+      "buy_f1": 0.27414330218068533,
+      "sell_precision": 0.24561403508771928,
+      "hold_precision": 0.5220994475138122,
+      "buy_precision": 0.3464566929133858,
+      "sell_recall": 0.34355828220858897,
+      "hold_recall": 0.525,
+      "buy_recall": 0.2268041237113402
+    },
+    "candidate_metrics": {
+      "accuracy": 0.3947001394700139,
+      "balanced_accuracy": 0.3587729592852608,
+      "macro_f1": 0.3550090448113683,
+      "sell_f1": 0.27860696517412936,
+      "hold_f1": 0.5125348189415042,
+      "buy_f1": 0.27388535031847133,
+      "sell_precision": 0.23430962343096234,
+      "hold_precision": 0.5139664804469274,
+      "buy_precision": 0.35833333333333334,
+      "sell_recall": 0.34355828220858897,
+      "hold_recall": 0.5111111111111111,
+      "buy_recall": 0.22164948453608246
+    },
+    "baseline_confusion_matrix": [
+      [
+        56,
+        82,
+        25
+      ],
+      [
+        113,
+        189,
+        58
+      ],
+      [
+        59,
+        91,
+        44
+      ]
+    ],
+    "candidate_confusion_matrix": [
+      [
+        56,
+        83,
+        24
+      ],
+      [
+        123,
+        184,
+        53
+      ],
+      [
+        60,
+        91,
+        43
+      ]
+    ]
+  },
+  "tier4_operational_2025_benchmark": {
+    "tail_purged_702": {
+      "baseline": {
+        "accuracy": 0.3603988603988604,
+        "balanced_accuracy": 0.3399153923651035,
+        "macro_f1": 0.3210937405477345,
+        "sell_f1": 0.14715719063545152,
+        "hold_f1": 0.4533333333333333,
+        "buy_f1": 0.3627906976744186,
+        "sell_precision": 0.18333333333333332,
+        "hold_precision": 0.47962382445141066,
+        "buy_precision": 0.2965779467680608,
+        "sell_recall": 0.12290502793296089,
+        "hold_recall": 0.4297752808988764,
+        "buy_recall": 0.46706586826347307
+      },
+      "candidate": {
+        "accuracy": 0.34615384615384615,
+        "balanced_accuracy": 0.3594418406924773,
+        "macro_f1": 0.2992170742170742,
+        "sell_f1": 0.09523809523809523,
+        "hold_f1": 0.3952702702702703,
+        "buy_f1": 0.40714285714285714,
+        "sell_precision": 0.1643835616438356,
+        "hold_precision": 0.4957627118644068,
+        "buy_precision": 0.2900763358778626,
+        "sell_recall": 0.0670391061452514,
+        "hold_recall": 0.32865168539325845,
+        "buy_recall": 0.6826347305389222
+      }
+    },
+    "full_717": {
+      "baseline": {
+        "accuracy": 0.35704323570432356,
+        "balanced_accuracy": 0.33372311341001826,
+        "macro_f1": 0.31742563681201075,
+        "sell_f1": 0.14426229508196722,
+        "hold_f1": 0.45021645021645024,
+        "buy_f1": 0.3577981651376147,
+        "sell_precision": 0.1746031746031746,
+        "hold_precision": 0.47560975609756095,
+        "buy_precision": 0.2965779467680608,
+        "sell_recall": 0.12290502793296089,
+        "hold_recall": 0.4273972602739726,
+        "buy_recall": 0.4508670520231214
+      },
+      "candidate": {
+        "accuracy": 0.3458856345885635,
+        "balanced_accuracy": 0.35341507301999053,
+        "macro_f1": 0.2985191348823351,
+        "sell_f1": 0.0933852140077821,
+        "hold_f1": 0.3993453355155483,
+        "buy_f1": 0.4028268551236749,
+        "sell_precision": 0.15384615384615385,
+        "hold_precision": 0.4959349593495935,
+        "buy_precision": 0.2900763358778626,
+        "sell_recall": 0.0670391061452514,
+        "hold_recall": 0.33424657534246577,
+        "buy_recall": 0.6589595375722543
+      }
+    }
+  },
+  "safeguards_verified": {
+    "production_models_untouched": true,
+    "no_2024_tuning_occurred": true,
+    "no_2025_tuning_occurred": true,
+    "no_dependencies_installed": true,
+    "no_deployment_triggered": true
+  }
+}

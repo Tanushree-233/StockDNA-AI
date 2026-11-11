@@ -1,64 +1,84 @@
 {
-  "model_version": "1.0.0",
+  "model_version": "2.0.0",
   "model_type": "XGBClassifier",
   "objective": "multi:softprob",
   "num_classes": 3,
   "test_period": "2025-01-02 to 2025-12-19",
-  "test_sample_count": 717,
+  "test_sample_count": 5280,
   "metrics": {
-    "accuracy": 0.3445,
-    "balanced_accuracy": 0.3418,
-    "macro_precision": 0.3162,
-    "macro_recall": 0.3418,
-    "macro_f1": 0.3140,
-    "weighted_f1": 0.3403,
+    "accuracy": 0.5733,
+    "balanced_accuracy": 0.3578,
+    "macro_precision": 0.4132,
+    "macro_recall": 0.3578,
+    "macro_f1": 0.3128,
+    "weighted_f1": 0.4654,
     "per_class": {
       "SELL": {
-        "precision": 0.1471,
-        "recall": 0.1397,
-        "f1": 0.1433,
-        "support": 179
+        "precision": 0.2430939226519337,
+        "recall": 0.04143126177024482,
+        "f1": 0.07079646017699115,
+        "support": 1062
       },
       "HOLD": {
-        "precision": 0.5050,
-        "recall": 0.4137,
-        "f1": 0.4548,
-        "support": 365
+        "precision": 0.5940716344174557,
+        "recall": 0.9496544916090819,
+        "f1": 0.730910472331265,
+        "support": 3039
       },
       "BUY": {
-        "precision": 0.2965,
-        "recall": 0.4740,
-        "f1": 0.3648,
-        "support": 173
+        "precision": 0.4024896265560166,
+        "recall": 0.08227311280746395,
+        "f1": 0.13661971830985917,
+        "support": 1179
       }
     },
     "confusion_matrix": {
-      "rows_are_actual": ["SELL", "HOLD", "BUY"],
-      "columns_are_predicted": ["SELL", "HOLD", "BUY"],
+      "rows_are_actual": [
+        "SELL",
+        "HOLD",
+        "BUY"
+      ],
+      "columns_are_predicted": [
+        "SELL",
+        "HOLD",
+        "BUY"
+      ],
       "matrix": [
-        [25, 92, 62],
-        [83, 151, 131],
-        [39, 52, 82]
+        [
+          44,
+          974,
+          44
+        ],
+        [
+          53,
+          2886,
+          100
+        ],
+        [
+          84,
+          998,
+          97
+        ]
       ]
     }
   },
   "backtest_summary": {
-    "long_trades": 300,
-    "win_rate_pct": 55.67,
-    "stacked_cumulative_return_pct": 35.75,
-    "stacked_max_drawdown_pct": -70.36,
-    "stacked_sharpe": 0.16,
-    "daily_portfolio_cumulative_return_pct": -1.96,
-    "daily_portfolio_max_drawdown_pct": -21.71,
-    "daily_portfolio_sharpe": -0.02,
-    "benchmark_buy_and_hold_return_pct": -2.66,
-    "benchmark_max_drawdown_pct": -19.85
+    "long_trades": 241,
+    "win_rate_pct": 60.17,
+    "stacked_cumulative_return_pct": 266.3,
+    "stacked_max_drawdown_pct": -50.21,
+    "stacked_sharpe": 0.4,
+    "daily_portfolio_cumulative_return_pct": 119.84,
+    "daily_portfolio_max_drawdown_pct": -25.11,
+    "daily_portfolio_sharpe": 0.4,
+    "benchmark_buy_and_hold_return_pct": 8.42,
+    "benchmark_max_drawdown_pct": -12.35
   },
   "xai_summary": {
-    "mean_internal_attribution_pct": 22.27,
-    "mean_external_attribution_pct": 77.73,
-    "top_internal_feature": "EPS_Surprise",
-    "top_external_feature": "VIX_Level",
+    "mean_internal_attribution_pct": 22.48,
+    "mean_external_attribution_pct": 77.52,
+    "top_internal_feature": "Days_Since_Earnings",
+    "top_external_feature": "Normalized_ATR",
     "internal_features_in_top_5": 2
   }
 }

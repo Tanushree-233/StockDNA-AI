@@ -159,6 +159,9 @@ for ticker in stock["Ticker"].unique():
         internal["Ticker"] == ticker
     ].copy()
 
+    # Drop unannounced future quarters where AnnouncementDate is null
+    internal_ticker = internal_ticker.dropna(subset=["AnnouncementDate"])
+
     if internal_ticker.empty:
 
         print(

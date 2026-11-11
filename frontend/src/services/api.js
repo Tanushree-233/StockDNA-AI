@@ -20,9 +20,12 @@ export const authStorage = {
 
 async function request(endpoint, options = {}) {
   const headers = {
-    'Content-Type': 'application/json',
     ...options.headers,
   };
+
+  if (!(options.body instanceof FormData)) {
+    headers['Content-Type'] = headers['Content-Type'] || 'application/json';
+  }
 
   const token = authStorage.getToken();
   if (token) {
@@ -156,6 +159,20 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ records: rawRecords }),
     });
+  },
+
+  // Data Aggregator Ingestion & Clustering
+  uploadAndAggregate: async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return await request('/datatool/aggregate/upload', {
+      method: 'POST',
+      body: formData,
+    });
+  },
+
+  getSampleDatasets: async () => {
+    return await request('/datatool/aggregate/sample');
   },
 
   // Research & Audited Academic Artifacts

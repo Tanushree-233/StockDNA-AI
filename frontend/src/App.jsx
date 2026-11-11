@@ -6,6 +6,7 @@ import Explainability from './pages/Explainability';
 import DataTool from './pages/DataTool';
 import History from './pages/History';
 import Methodology from './pages/Methodology';
+import DataAggregator from './pages/DataAggregator';
 
 export default function App() {
   const [activePage, setActivePage] = useState('home');
@@ -46,6 +47,7 @@ export default function App() {
             onNavigate={handleNavigate}
           />
         )}
+        {activePage === 'aggregator' && <DataAggregator />}
         {activePage === 'datatool' && <DataTool />}
         {activePage === 'history' && <History onNavigate={handleNavigate} />}
         {activePage === 'methodology' && <Methodology />}

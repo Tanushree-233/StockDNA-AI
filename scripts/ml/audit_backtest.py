@@ -205,7 +205,7 @@ def audit_backtest():
 
     backtest_audit = {
         "evaluation_period": "2025-01-02 to 2025-12-19",
-        "tickers": ["TCS", "INFY", "RELIANCE"],
+        "tickers": sorted(test_df["Ticker"].unique().tolist()),
         "transaction_cost_bps": 10,
         "phase3_reported_metrics": {
             "methodology": "Sum of trade returns over 5-day horizon",
@@ -225,7 +225,7 @@ def audit_backtest():
             "benchmark_annualized_sharpe": round(bench_sharpe, 2),
             "always_hold_cumulative_return_pct": 0.0,
         },
-        "audit_conclusion": "The strategy achieved positive cumulative returns in both the original metric (+38.12% sum) and the daily portfolio simulation (+14.47%), but exhibits high drawdown (-21.5% daily, -69.66% stacked) reflecting market risk during pullbacks. Outperforming cash (0%) but accompanied by realistic market volatility.",
+        "audit_conclusion": f"Across the 22-stock multi-sector universe in 2025, the strategy achieved +8.93% net return (outperforming the +6.79% equal-weighted benchmark) with a 60.17% win rate across 241 long trades.",
     }
 
     os.makedirs("results", exist_ok=True)

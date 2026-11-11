@@ -25,6 +25,8 @@ import json
 import numpy as np
 import pandas as pd
 from sklearn.dummy import DummyClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (
@@ -139,29 +141,34 @@ def evaluate_all_baselines():
     models["Stratified_Random"] = dummy_stratified
 
     # 4. Logistic Regression
-    lr = LogisticRegression(max_iter=1000, class_weight="balanced", random_state=42)
+    lr = Pipeline([
+        ("scaler", StandardScaler()),
+        ("classifier", LogisticRegression(max_iter=2000, class_weight="balanced", random_state=42))
+    ])
     lr.fit(X_train, y_train)
     models["LogisticRegression"] = lr
 
     # 5. Random Forest
-    rf = RandomForestClassifier(n_estimators=150, max_depth=6, class_weight="balanced", random_state=42, n_jobs=-1)
+    rf = RandomForestClassifier(n_estimators=150, max_depth=8, random_state=42, n_jobs=1)
     rf.fit(X_train, y_train)
     models["RandomForest"] = rf
 
-    # 6. XGBoost Classifier
+    # 6. XGBoost Classifier (Production Deliverable)
     xgb = XGBClassifier(
         objective="multi:softprob",
         num_class=3,
-        n_estimators=200,
+        n_estimators=300,
         learning_rate=0.03,
-        max_depth=4,
-        subsample=0.8,
-        colsample_bytree=0.8,
+        max_depth=5,
+        subsample=0.85,
+        colsample_bytree=0.85,
         min_child_weight=3,
+        reg_alpha=0.1,
+        reg_lambda=1.0,
         random_state=42,
         eval_metric="mlogloss",
     )
-    xgb.fit(X_train, y_train, sample_weight=sample_weights_train, eval_set=[(X_val, y_val)], verbose=False)
+    xgb.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=False)
     models["XGBoost"] = xgb
 
     results = []

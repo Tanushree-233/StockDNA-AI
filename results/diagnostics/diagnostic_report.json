@@ -1,0 +1,509 @@
+{
+  "disclaimer": "POST-MORTEM ONLY. DO NOT USE TO TUNE THRESHOLDS, CHOOSE FEATURES, OR SELECT MODELS.",
+  "timestamp": "2026-10-13T17:59:24.105600+00:00",
+  "evaluated_set": "2024 Holdout (717 rows, 239 bars per ticker, 2024-01-02 to 2024-12-23)",
+  "models_evaluated": {
+    "production": "models/production/model.json (Direct Artifact Load)",
+    "candidate": "models/candidates/candidate_v1/candidate_model.joblib (Direct Artifact Load)"
+  },
+  "pairwise_agreement": {
+    "agreement_rate": 0.8507670850767085,
+    "both_correct": 246,
+    "both_incorrect": 397,
+    "prod_only_correct": 37,
+    "cand_only_correct": 37,
+    "net_discordant_advantage": 0
+  },
+  "overall_comparison": {
+    "production": {
+      "accuracy": 0.3947001394700139,
+      "balanced_accuracy": 0.3549502573220238,
+      "macro_f1": 0.3508990528782963,
+      "weighted_f1": 0.39295902846775427,
+      "sell": {
+        "precision": 0.23684210526315788,
+        "recall": 0.3312883435582822,
+        "f1": 0.27621483375959077,
+        "support": 163
+      },
+      "hold": {
+        "precision": 0.5150684931506849,
+        "recall": 0.5222222222222223,
+        "f1": 0.5186206896551724,
+        "support": 360
+      },
+      "buy": {
+        "precision": 0.33064516129032256,
+        "recall": 0.211340206185567,
+        "f1": 0.2578616352201258,
+        "support": 194
+      }
+    },
+    "candidate": {
+      "accuracy": 0.3947001394700139,
+      "balanced_accuracy": 0.3587729592852608,
+      "macro_f1": 0.3550090448113683,
+      "weighted_f1": 0.394782744915074,
+      "sell": {
+        "precision": 0.23430962343096234,
+        "recall": 0.34355828220858897,
+        "f1": 0.27860696517412936,
+        "support": 163
+      },
+      "hold": {
+        "precision": 0.5139664804469274,
+        "recall": 0.5111111111111111,
+        "f1": 0.5125348189415042,
+        "support": 360
+      },
+      "buy": {
+        "precision": 0.35833333333333334,
+        "recall": 0.22164948453608246,
+        "f1": 0.27388535031847133,
+        "support": 194
+      }
+    },
+    "delta": {
+      "accuracy": 0.0,
+      "balanced_accuracy": 0.0038227019632370296,
+      "macro_f1": 0.004109991933071988,
+      "sell_f1": 0.0023921314145385897,
+      "hold_f1": -0.006085870713668173,
+      "buy_f1": 0.016023715098345548
+    },
+    "confusion_matrices": {
+      "production": [
+        [
+          54,
+          81,
+          28
+        ],
+        [
+          117,
+          188,
+          55
+        ],
+        [
+          57,
+          96,
+          41
+        ]
+      ],
+      "candidate": [
+        [
+          56,
+          83,
+          24
+        ],
+        [
+          123,
+          184,
+          53
+        ],
+        [
+          60,
+          91,
+          43
+        ]
+      ]
+    },
+    "prediction_counts": {
+      "true": {
+        "1": 360,
+        "2": 194,
+        "0": 163
+      },
+      "production": {
+        "1": 365,
+        "0": 228,
+        "2": 124
+      },
+      "candidate": {
+        "1": 358,
+        "0": 239,
+        "2": 120
+      }
+    }
+  },
+  "per_ticker_breakdown": {
+    "INFY": {
+      "n_samples": 239,
+      "true_distribution": {
+        "1": 110,
+        "2": 78,
+        "0": 51
+      },
+      "production": {
+        "metrics": {
+          "accuracy": 0.3891213389121339,
+          "balanced_accuracy": 0.3762237762237762,
+          "macro_f1": 0.3731048505346428,
+          "weighted_f1": 0.395571903699839,
+          "sell": {
+            "precision": 0.2361111111111111,
+            "recall": 0.3333333333333333,
+            "f1": 0.2764227642276423,
+            "support": 51
+          },
+          "hold": {
+            "precision": 0.48484848484848486,
+            "recall": 0.43636363636363634,
+            "f1": 0.45933014354066987,
+            "support": 110
+          },
+          "buy": {
+            "precision": 0.4117647058823529,
+            "recall": 0.358974358974359,
+            "f1": 0.3835616438356164,
+            "support": 78
+          }
+        },
+        "confusion_matrix": [
+          [
+            17,
+            23,
+            11
+          ],
+          [
+            33,
+            48,
+            29
+          ],
+          [
+            22,
+            28,
+            28
+          ]
+        ],
+        "pred_counts": {
+          "1": 99,
+          "0": 72,
+          "2": 68
+        }
+      },
+      "candidate": {
+        "metrics": {
+          "accuracy": 0.38493723849372385,
+          "balanced_accuracy": 0.3614333379039261,
+          "macro_f1": 0.3614230728672361,
+          "weighted_f1": 0.38923947588218866,
+          "sell": {
+            "precision": 0.2153846153846154,
+            "recall": 0.27450980392156865,
+            "f1": 0.2413793103448276,
+            "support": 51
+          },
+          "hold": {
+            "precision": 0.4722222222222222,
+            "recall": 0.4636363636363636,
+            "f1": 0.46788990825688076,
+            "support": 110
+          },
+          "buy": {
+            "precision": 0.4090909090909091,
+            "recall": 0.34615384615384615,
+            "f1": 0.375,
+            "support": 78
+          }
+        },
+        "confusion_matrix": [
+          [
+            14,
+            26,
+            11
+          ],
+          [
+            31,
+            51,
+            28
+          ],
+          [
+            20,
+            31,
+            27
+          ]
+        ],
+        "pred_counts": {
+          "1": 108,
+          "2": 66,
+          "0": 65
+        }
+      },
+      "delta": {
+        "accuracy": -0.004184100418410053,
+        "balanced_accuracy": -0.014790438319850052,
+        "macro_f1": -0.011681777667406745
+      }
+    },
+    "RELIANCE": {
+      "n_samples": 239,
+      "true_distribution": {
+        "1": 129,
+        "0": 58,
+        "2": 52
+      },
+      "production": {
+        "metrics": {
+          "accuracy": 0.3682008368200837,
+          "balanced_accuracy": 0.341568482306253,
+          "macro_f1": 0.3316066066066066,
+          "weighted_f1": 0.3807116740171133,
+          "sell": {
+            "precision": 0.23529411764705882,
+            "recall": 0.41379310344827586,
+            "f1": 0.3,
+            "support": 58
+          },
+          "hold": {
+            "precision": 0.5806451612903226,
+            "recall": 0.4186046511627907,
+            "f1": 0.4864864864864865,
+            "support": 129
+          },
+          "buy": {
+            "precision": 0.22727272727272727,
+            "recall": 0.19230769230769232,
+            "f1": 0.20833333333333334,
+            "support": 52
+          }
+        },
+        "confusion_matrix": [
+          [
+            24,
+            18,
+            16
+          ],
+          [
+            57,
+            54,
+            18
+          ],
+          [
+            21,
+            21,
+            10
+          ]
+        ],
+        "pred_counts": {
+          "0": 102,
+          "1": 93,
+          "2": 44
+        }
+      },
+      "candidate": {
+        "metrics": {
+          "accuracy": 0.3807531380753138,
+          "balanced_accuracy": 0.3696255628893961,
+          "macro_f1": 0.3541678507151653,
+          "weighted_f1": 0.3915806125979589,
+          "sell": {
+            "precision": 0.25,
+            "recall": 0.4827586206896552,
+            "f1": 0.32941176470588235,
+            "support": 58
+          },
+          "hold": {
+            "precision": 0.5862068965517241,
+            "recall": 0.3953488372093023,
+            "f1": 0.4722222222222222,
+            "support": 129
+          },
+          "buy": {
+            "precision": 0.3,
+            "recall": 0.23076923076923078,
+            "f1": 0.2608695652173913,
+            "support": 52
+          }
+        },
+        "confusion_matrix": [
+          [
+            28,
+            19,
+            11
+          ],
+          [
+            61,
+            51,
+            17
+          ],
+          [
+            23,
+            17,
+            12
+          ]
+        ],
+        "pred_counts": {
+          "0": 112,
+          "1": 87,
+          "2": 40
+        }
+      },
+      "delta": {
+        "accuracy": 0.012552301255230103,
+        "balanced_accuracy": 0.0280570805831431,
+        "macro_f1": 0.022561244108558698
+      }
+    },
+    "TCS": {
+      "n_samples": 239,
+      "true_distribution": {
+        "1": 121,
+        "2": 64,
+        "0": 54
+      },
+      "production": {
+        "metrics": {
+          "accuracy": 0.42677824267782427,
+          "balanced_accuracy": 0.3327865141312111,
+          "macro_f1": 0.30157404092241186,
+          "weighted_f1": 0.371722791737263,
+          "sell": {
+            "precision": 0.24074074074074073,
+            "recall": 0.24074074074074073,
+            "f1": 0.24074074074074073,
+            "support": 54
+          },
+          "hold": {
+            "precision": 0.49710982658959535,
+            "recall": 0.7107438016528925,
+            "f1": 0.5850340136054422,
+            "support": 121
+          },
+          "buy": {
+            "precision": 0.25,
+            "recall": 0.046875,
+            "f1": 0.07894736842105263,
+            "support": 64
+          }
+        },
+        "confusion_matrix": [
+          [
+            13,
+            40,
+            1
+          ],
+          [
+            27,
+            86,
+            8
+          ],
+          [
+            14,
+            47,
+            3
+          ]
+        ],
+        "pred_counts": {
+          "1": 173,
+          "0": 54,
+          "2": 12
+        }
+      },
+      "candidate": {
+        "metrics": {
+          "accuracy": 0.41841004184100417,
+          "balanced_accuracy": 0.3331484032241608,
+          "macro_f1": 0.30713606721377484,
+          "weighted_f1": 0.3743590994114769,
+          "sell": {
+            "precision": 0.22580645161290322,
+            "recall": 0.25925925925925924,
+            "f1": 0.2413793103448276,
+            "support": 54
+          },
+          "hold": {
+            "precision": 0.5030674846625767,
+            "recall": 0.6776859504132231,
+            "f1": 0.5774647887323944,
+            "support": 121
+          },
+          "buy": {
+            "precision": 0.2857142857142857,
+            "recall": 0.0625,
+            "f1": 0.10256410256410256,
+            "support": 64
+          }
+        },
+        "confusion_matrix": [
+          [
+            14,
+            38,
+            2
+          ],
+          [
+            31,
+            82,
+            8
+          ],
+          [
+            17,
+            43,
+            4
+          ]
+        ],
+        "pred_counts": {
+          "1": 163,
+          "0": 62,
+          "2": 14
+        }
+      },
+      "delta": {
+        "accuracy": -0.008368200836820106,
+        "balanced_accuracy": 0.0003618890929497076,
+        "macro_f1": 0.005562026291362987
+      }
+    }
+  },
+  "non_overlapping_decimation": {
+    "n_samples": 144,
+    "sampling": "Every 5th trading bar per ticker (independent 5-day return windows)",
+    "production": {
+      "accuracy": 0.4236111111111111,
+      "balanced_accuracy": 0.3757796451914099,
+      "macro_f1": 0.3777427326005876,
+      "weighted_f1": 0.4285475823067075,
+      "sell": {
+        "precision": 0.22448979591836735,
+        "recall": 0.3235294117647059,
+        "f1": 0.26506024096385544,
+        "support": 34
+      },
+      "hold": {
+        "precision": 0.5694444444444444,
+        "recall": 0.5466666666666666,
+        "f1": 0.5578231292517006,
+        "support": 75
+      },
+      "buy": {
+        "precision": 0.391304347826087,
+        "recall": 0.2571428571428571,
+        "f1": 0.3103448275862069,
+        "support": 35
+      }
+    },
+    "candidate": {
+      "accuracy": 0.4166666666666667,
+      "balanced_accuracy": 0.37669467787114846,
+      "macro_f1": 0.3786075036075036,
+      "weighted_f1": 0.424636994949495,
+      "sell": {
+        "precision": 0.2222222222222222,
+        "recall": 0.35294117647058826,
+        "f1": 0.2727272727272727,
+        "support": 34
+      },
+      "hold": {
+        "precision": 0.5652173913043478,
+        "recall": 0.52,
+        "f1": 0.5416666666666666,
+        "support": 75
+      },
+      "buy": {
+        "precision": 0.42857142857142855,
+        "recall": 0.2571428571428571,
+        "f1": 0.32142857142857145,
+        "support": 35
+      }
+    }
+  }
+}

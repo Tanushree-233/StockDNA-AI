@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { api, authStorage } from '../services/api';
+import { DEFAULT_UNIVERSE, normalizeUniverse } from '../services/universe';
 import DecisionBadge from '../components/DecisionBadge';
 import AuthModal from '../components/AuthModal';
 
 export default function History({ onNavigate }) {
   const [history, setHistory] = useState([]);
+  const [universe, setUniverse] = useState(DEFAULT_UNIVERSE);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [filterTicker, setFilterTicker] = useState('ALL');
@@ -12,6 +14,17 @@ export default function History({ onNavigate }) {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   const isLoggedIn = authStorage.isLoggedIn();
+
+  useEffect(() => {
+    api
+      .getUniverse()
+      .then((res) => {
+        if (Array.isArray(res) && res.length > 0) {
+          setUniverse(normalizeUniverse(res));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -131,9 +144,11 @@ export default function History({ onNavigate }) {
                 style={{ padding: '0.35rem 0.65rem', fontSize: '0.8rem' }}
               >
                 <option value="ALL">All Tickers</option>
-                <option value="TCS">TCS</option>
-                <option value="INFY">INFY</option>
-                <option value="RELIANCE">RELIANCE</option>
+                {universe.map((stock) => (
+                  <option key={stock.ticker} value={stock.ticker}>
+                    {stock.ticker}
+                  </option>
+                ))}
               </select>
             </div>
 

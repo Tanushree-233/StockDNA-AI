@@ -1,105 +1,105 @@
 {
-  "created_at": "2026-09-15T16:37:37.845775+00:00",
-  "training_data_hash": "e3a77b69333878f60ff37ae7b5b2c05e0f099f486b59738bef981585ac409472",
-  "train_rows": 3789,
-  "val_rows": 720,
-  "test_rows": 717,
+  "created_at": "2026-11-11T06:35:55.769557+00:00",
+  "training_data_hash": "5a4210c28c8004611be3e511e90e0dcec1b2968d825c6c2e7608114c5321b8f1",
+  "train_rows": 28094,
+  "val_rows": 5280,
+  "test_rows": 5280,
   "validation_metrics": {
     "split": "Validation",
-    "accuracy": 0.3958,
-    "balanced_accuracy": 0.3555,
-    "macro_f1": 0.3513,
-    "weighted_f1": 0.3939,
+    "accuracy": 0.4805,
+    "balanced_accuracy": 0.3384,
+    "macro_f1": 0.2571,
+    "weighted_f1": 0.3494,
     "per_class": {
       "SELL": {
-        "precision": 0.23684210526315788,
-        "recall": 0.3312883435582822,
-        "f1": 0.27621483375959077,
-        "support": 163
+        "precision": 0.15841584158415842,
+        "recall": 0.026578073089700997,
+        "f1": 0.04551920341394026,
+        "support": 1204
       },
       "HOLD": {
-        "precision": 0.5163043478260869,
-        "recall": 0.5248618784530387,
-        "f1": 0.5205479452054794,
-        "support": 362
+        "precision": 0.4950354609929078,
+        "recall": 0.9472663823187282,
+        "f1": 0.6502528613255257,
+        "support": 2579
       },
       "BUY": {
-        "precision": 0.33064516129032256,
-        "recall": 0.21025641025641026,
-        "f1": 0.25705329153605017,
-        "support": 195
+        "precision": 0.43356643356643354,
+        "recall": 0.041416165664662656,
+        "f1": 0.07560975609756097,
+        "support": 1497
       }
     },
     "confusion_matrix": [
       [
-        54,
-        81,
-        28
+        32,
+        1145,
+        27
       ],
       [
-        117,
-        190,
-        55
+        82,
+        2443,
+        54
       ],
       [
-        57,
-        97,
-        41
+        88,
+        1347,
+        62
       ]
     ]
   },
   "test_metrics": {
     "split": "Test",
-    "accuracy": 0.3529,
-    "balanced_accuracy": 0.3493,
-    "macro_f1": 0.3218,
-    "weighted_f1": 0.3489,
+    "accuracy": 0.5733,
+    "balanced_accuracy": 0.3578,
+    "macro_f1": 0.3128,
+    "weighted_f1": 0.4654,
     "per_class": {
       "SELL": {
-        "precision": 0.13815789473684212,
-        "recall": 0.11731843575418995,
-        "f1": 0.1268882175226586,
-        "support": 179
+        "precision": 0.2430939226519337,
+        "recall": 0.04143126177024482,
+        "f1": 0.07079646017699115,
+        "support": 1062
       },
       "HOLD": {
-        "precision": 0.5113636363636364,
-        "recall": 0.3698630136986301,
-        "f1": 0.4292527821939587,
-        "support": 365
+        "precision": 0.5940716344174557,
+        "recall": 0.9496544916090819,
+        "f1": 0.730910472331265,
+        "support": 3039
       },
       "BUY": {
-        "precision": 0.3222591362126246,
-        "recall": 0.5606936416184971,
-        "f1": 0.4092827004219409,
-        "support": 173
+        "precision": 0.4024896265560166,
+        "recall": 0.08227311280746395,
+        "f1": 0.13661971830985917,
+        "support": 1179
       }
     },
     "confusion_matrix": [
       [
-        21,
-        88,
-        70
+        44,
+        974,
+        44
       ],
       [
-        96,
-        135,
-        134
+        53,
+        2886,
+        100
       ],
       [
-        35,
-        41,
+        84,
+        998,
         97
       ]
     ]
   },
   "backtest_metrics": {
     "strategy": "Long on BUY (prob threshold/argmax), Flat otherwise",
-    "number_of_trades": 301,
-    "winning_trades": 168,
-    "win_rate": 0.5581,
-    "cumulative_return_pct": 38.12,
-    "max_drawdown_pct": -69.66,
-    "annualized_sharpe": 0.17,
+    "number_of_trades": 241,
+    "winning_trades": 145,
+    "win_rate": 0.6017,
+    "cumulative_return_pct": 266.3,
+    "max_drawdown_pct": -50.21,
+    "annualized_sharpe": 0.4,
     "transaction_cost_per_trade_bps": 10
   }
 }

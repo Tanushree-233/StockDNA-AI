@@ -1,15 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { api, authStorage } from '../services/api';
+import { DEFAULT_UNIVERSE, normalizeUniverse } from '../services/universe';
 import DecisionBadge from '../components/DecisionBadge';
 import ProbabilityGauge from '../components/ProbabilityGauge';
 import AuthModal from '../components/AuthModal';
 
 export default function Predict({ onNavigate, initialTicker = 'TCS', onPredictionSuccess }) {
   const [ticker, setTicker] = useState(initialTicker);
+  const [universe, setUniverse] = useState(DEFAULT_UNIVERSE);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+
+  useEffect(() => {
+    if (initialTicker) {
+      setTicker(initialTicker);
+    }
+  }, [initialTicker]);
+
+  useEffect(() => {
+    api
+      .getUniverse()
+      .then((res) => {
+        if (Array.isArray(res) && res.length > 0) {
+          setUniverse(normalizeUniverse(res));
+        }
+      })
+      .catch(() => {
+        // Fallback to DEFAULT_UNIVERSE already set
+      });
+  }, []);
 
   const isLoggedIn = authStorage.isLoggedIn();
 
@@ -57,9 +78,11 @@ export default function Predict({ onNavigate, initialTicker = 'TCS', onPredictio
               onChange={(e) => setTicker(e.target.value)}
               disabled={loading}
             >
-              <option value="TCS">TCS — Tata Consultancy Services Ltd</option>
-              <option value="INFY">INFY — Infosys Ltd</option>
-              <option value="RELIANCE">RELIANCE — Reliance Industries Ltd</option>
+              {universe.map((stock) => (
+                <option key={stock.ticker} value={stock.ticker}>
+                  {stock.ticker} — {stock.name} ({stock.sector})
+                </option>
+              ))}
             </select>
           </div>
 

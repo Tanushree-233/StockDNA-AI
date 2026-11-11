@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api, authStorage } from '../services/api';
+import { DEFAULT_UNIVERSE, normalizeUniverse } from '../services/universe';
 import AttributionDonut from '../components/AttributionDonut';
 import ShapWaterfall from '../components/ShapWaterfall';
 import DecisionBadge from '../components/DecisionBadge';
@@ -7,8 +8,20 @@ import DecisionBadge from '../components/DecisionBadge';
 export default function Explainability({ initialPrediction, onNavigate }) {
   const [predictionData, setPredictionData] = useState(initialPrediction || null);
   const [ticker, setTicker] = useState('TCS');
+  const [universe, setUniverse] = useState(DEFAULT_UNIVERSE);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    api
+      .getUniverse()
+      .then((res) => {
+        if (Array.isArray(res) && res.length > 0) {
+          setUniverse(normalizeUniverse(res));
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (initialPrediction) {
@@ -61,9 +74,11 @@ export default function Explainability({ initialPrediction, onNavigate }) {
             onChange={(e) => setTicker(e.target.value)}
             style={{ padding: '0.45rem 0.75rem', fontSize: '0.85rem' }}
           >
-            <option value="TCS">TCS</option>
-            <option value="INFY">INFY</option>
-            <option value="RELIANCE">RELIANCE</option>
+            {universe.map((stock) => (
+              <option key={stock.ticker} value={stock.ticker}>
+                {stock.ticker} — {stock.name}
+              </option>
+            ))}
           </select>
           <button
             type="submit"

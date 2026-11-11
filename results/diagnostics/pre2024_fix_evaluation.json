@@ -1,0 +1,146 @@
+{
+  "evaluation_scope": "Pre-2024 Development Data Only (2018-2023)",
+  "2024_holdout_status": "EXCLUDED (Untouched out-of-sample holdout)",
+  "feature_change": "Replaced nominal Reported_EPS and EPS_Estimate with scale-invariant Earnings_Yield and Forward_Earnings_Yield",
+  "feature_count": 34,
+  "models": {
+    "XGBoost": {
+      "canonical_features": {
+        "splits": {
+          "Inner Split A (Val 2021)": {
+            "accuracy": 0.32761087267525035,
+            "balanced_accuracy": 0.30980421318114076,
+            "macro_f1": 0.3117829271162047,
+            "sell_f1": 0.17866004962779156,
+            "hold_f1": 0.42833052276559863,
+            "buy_f1": 0.3283582089552239
+          },
+          "Inner Split B (Val 2022)": {
+            "accuracy": 0.3884297520661157,
+            "balanced_accuracy": 0.3907086747507928,
+            "macro_f1": 0.35363464851135107,
+            "sell_f1": 0.17218543046357615,
+            "hold_f1": 0.4331450094161959,
+            "buy_f1": 0.4555735056542811
+          },
+          "Inner Split C (Val 2023)": {
+            "accuracy": 0.4652777777777778,
+            "balanced_accuracy": 0.36398351748847246,
+            "macro_f1": 0.354930175970968,
+            "sell_f1": 0.14358974358974358,
+            "hold_f1": 0.6067677946324388,
+            "buy_f1": 0.31443298969072164
+          }
+        },
+        "mean_accuracy": 0.3937728008397146,
+        "mean_balanced_accuracy": 0.35483213514013534,
+        "mean_macro_f1": 0.3401159171995079
+      },
+      "scale_invariant_features": {
+        "splits": {
+          "Inner Split A (Val 2021)": {
+            "accuracy": 0.33047210300429186,
+            "balanced_accuracy": 0.31311384951830007,
+            "macro_f1": 0.31435989507946605,
+            "sell_f1": 0.18414322250639387,
+            "hold_f1": 0.42070116861435725,
+            "buy_f1": 0.3382352941176471
+          },
+          "Inner Split B (Val 2022)": {
+            "accuracy": 0.41046831955922863,
+            "balanced_accuracy": 0.41957710689788147,
+            "macro_f1": 0.39418030428622425,
+            "sell_f1": 0.29607250755287007,
+            "hold_f1": 0.43222003929273084,
+            "buy_f1": 0.4542483660130719
+          },
+          "Inner Split C (Val 2023)": {
+            "accuracy": 0.4888888888888889,
+            "balanced_accuracy": 0.38504584230420114,
+            "macro_f1": 0.38364652250047043,
+            "sell_f1": 0.21359223300970873,
+            "hold_f1": 0.631336405529954,
+            "buy_f1": 0.30601092896174864
+          }
+        },
+        "mean_accuracy": 0.40994310381746984,
+        "mean_balanced_accuracy": 0.37257893290679417,
+        "mean_macro_f1": 0.36406224062205356
+      },
+      "delta": {
+        "accuracy": 0.016170302977755235,
+        "balanced_accuracy": 0.01774679776665883,
+        "macro_f1": 0.023946323422545657
+      }
+    },
+    "HistGradientBoosting": {
+      "canonical_features": {
+        "splits": {
+          "Inner Split A (Val 2021)": {
+            "accuracy": 0.34048640915593703,
+            "balanced_accuracy": 0.31651052224934717,
+            "macro_f1": 0.31548608049913535,
+            "sell_f1": 0.19321148825065274,
+            "hold_f1": 0.45714285714285713,
+            "buy_f1": 0.2961038961038961
+          },
+          "Inner Split B (Val 2022)": {
+            "accuracy": 0.39669421487603307,
+            "balanced_accuracy": 0.3984785319099197,
+            "macro_f1": 0.3744130532136529,
+            "sell_f1": 0.2422360248447205,
+            "hold_f1": 0.43272727272727274,
+            "buy_f1": 0.4482758620689655
+          },
+          "Inner Split C (Val 2023)": {
+            "accuracy": 0.44722222222222224,
+            "balanced_accuracy": 0.3884035496988531,
+            "macro_f1": 0.3676347569861287,
+            "sell_f1": 0.1507537688442211,
+            "hold_f1": 0.5546875,
+            "buy_f1": 0.3974630021141649
+          }
+        },
+        "mean_accuracy": 0.39480094875139743,
+        "mean_balanced_accuracy": 0.36779753461937337,
+        "mean_macro_f1": 0.35251129689963895
+      },
+      "scale_invariant_features": {
+        "splits": {
+          "Inner Split A (Val 2021)": {
+            "accuracy": 0.32474964234620884,
+            "balanced_accuracy": 0.31421293045341453,
+            "macro_f1": 0.3107290114865295,
+            "sell_f1": 0.20673076923076922,
+            "hold_f1": 0.41736227045075125,
+            "buy_f1": 0.30809399477806787
+          },
+          "Inner Split B (Val 2022)": {
+            "accuracy": 0.41735537190082644,
+            "balanced_accuracy": 0.4206245616769267,
+            "macro_f1": 0.4014724430383356,
+            "sell_f1": 0.2994011976047904,
+            "hold_f1": 0.44565217391304346,
+            "buy_f1": 0.45936395759717313
+          },
+          "Inner Split C (Val 2023)": {
+            "accuracy": 0.44722222222222224,
+            "balanced_accuracy": 0.38386951098553806,
+            "macro_f1": 0.3786458587866052,
+            "sell_f1": 0.21739130434782608,
+            "hold_f1": 0.5656050955414013,
+            "buy_f1": 0.35294117647058826
+          }
+        },
+        "mean_accuracy": 0.3964424121564192,
+        "mean_balanced_accuracy": 0.37290233437195974,
+        "mean_macro_f1": 0.3636157711038235
+      },
+      "delta": {
+        "accuracy": 0.001641463405021748,
+        "balanced_accuracy": 0.005104799752586375,
+        "macro_f1": 0.011104474204184533
+      }
+    }
+  }
+}
