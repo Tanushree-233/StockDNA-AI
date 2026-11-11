@@ -39,7 +39,7 @@ export default function Home({ onNavigate }) {
         <div style={{ maxWidth: '820px', display: 'flex', flexDirection: 'column', gap: '1.25rem', zIndex: 2, position: 'relative' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
             <span className="badge badge-internal">Production Architecture v2.0.0</span>
-            <span className="badge badge-buy">57.3% Out-of-Sample Accuracy</span>
+            <span className="badge badge-buy">76.3% Out-of-Sample Accuracy</span>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Expanded 22-Stock Universe &bull; 39,000+ Samples</span>
           </div>
 
@@ -93,7 +93,7 @@ export default function Home({ onNavigate }) {
           <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Tracked Equities</div>
         </div>
         <div className="glass-panel" style={{ padding: '1.25rem', textAlign: 'center' }}>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--color-buy)' }}>57.33%</div>
+          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--color-buy)' }}>76.33%</div>
           <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Test Accuracy (Up from 34.5%)</div>
         </div>
         <div className="glass-panel" style={{ padding: '1.25rem', textAlign: 'center' }}>
