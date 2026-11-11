@@ -12,12 +12,23 @@ export default function Predict({ onNavigate, initialTicker = 'TCS', onPredictio
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => authStorage.isLoggedIn());
 
   useEffect(() => {
     if (initialTicker) {
       setTicker(initialTicker);
     }
   }, [initialTicker]);
+
+  useEffect(() => {
+    const handleAuthExpired = () => {
+      setIsLoggedIn(false);
+      setIsAuthOpen(true);
+      setError('Your session has expired. Please sign in or register to continue.');
+    };
+    window.addEventListener('stockdna:auth_expired', handleAuthExpired);
+    return () => window.removeEventListener('stockdna:auth_expired', handleAuthExpired);
+  }, []);
 
   useEffect(() => {
     api
@@ -32,12 +43,12 @@ export default function Predict({ onNavigate, initialTicker = 'TCS', onPredictio
       });
   }, []);
 
-  const isLoggedIn = authStorage.isLoggedIn();
-
   const handlePredict = async (e) => {
-    if (e) e.preventDefault();
-    if (!isLoggedIn) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (!authStorage.isLoggedIn()) {
+      setIsLoggedIn(false);
       setIsAuthOpen(true);
+      setError('Please sign in or register to run stock predictions.');
       return;
     }
 
@@ -51,7 +62,20 @@ export default function Predict({ onNavigate, initialTicker = 'TCS', onPredictio
         onPredictionSuccess(data);
       }
     } catch (err) {
-      setError(err.message || 'Failed to generate prediction. Verify backend status.');
+      const msg = err.message || '';
+      if (
+        msg.includes('expired') ||
+        msg.includes('token') ||
+        msg.includes('401') ||
+        msg.includes('Unauthorized')
+      ) {
+        authStorage.clearToken();
+        setIsLoggedIn(false);
+        setIsAuthOpen(true);
+        setError('Your session has expired. Please sign in or register to continue.');
+      } else {
+        setError(msg || 'Failed to generate prediction. Verify backend status.');
+      }
     } finally {
       setLoading(false);
     }
@@ -134,9 +158,30 @@ export default function Predict({ onNavigate, initialTicker = 'TCS', onPredictio
             border: '1px solid var(--color-sell-border)',
             color: 'var(--color-sell)',
             fontSize: '0.9rem',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '0.75rem',
           }}
         >
-          <strong>Prediction Error:</strong> {error}
+          <div>
+            <strong>Prediction Error:</strong> {error}
+          </div>
+          {(!isLoggedIn ||
+            error.includes('expired') ||
+            error.includes('token') ||
+            error.includes('sign in') ||
+            error.includes('session')) && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => setIsAuthOpen(true)}
+              style={{ padding: '0.35rem 0.85rem', fontSize: '0.8rem' }}
+            >
+              Sign In / Re-authenticate
+            </button>
+          )}
         </div>
       )}
 
@@ -247,6 +292,8 @@ export default function Predict({ onNavigate, initialTicker = 'TCS', onPredictio
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
         onSuccess={() => {
+          setIsLoggedIn(true);
+          setError(null);
           setIsAuthOpen(false);
           handlePredict();
         }}

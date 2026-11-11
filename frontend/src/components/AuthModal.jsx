@@ -35,6 +35,28 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
     }
   };
 
+  const handleDemoLogin = async () => {
+    setError(null);
+    setLoading(true);
+    const demoEmail = 'analyst@stockdna.io';
+    const demoPass = 'StockDNA2026!';
+    try {
+      try {
+        await api.login(demoEmail, demoPass);
+      } catch {
+        // Register if not yet seeded
+        await api.register('lead_analyst', demoEmail, demoPass);
+        await api.login(demoEmail, demoPass);
+      }
+      onSuccess();
+      onClose();
+    } catch (err) {
+      setError(err.message || 'Quick login failed.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
@@ -143,6 +165,18 @@ export default function AuthModal({ isOpen, onClose, onSuccess }) {
               ) : (
                 'Create Account'
               )}
+            </button>
+          </div>
+
+          <div style={{ marginTop: '0.85rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '1rem', textAlign: 'center' }}>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleDemoLogin}
+              disabled={loading}
+              style={{ width: '100%', fontSize: '0.82rem', padding: '0.55rem', border: '1px solid var(--border-focus)' }}
+            >
+              ⚡ Quick 1-Click Analyst Login
             </button>
           </div>
         </form>

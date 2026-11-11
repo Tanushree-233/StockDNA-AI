@@ -48,6 +48,16 @@ async function request(endpoint, options = {}) {
       } catch {
         // Fallback to text
       }
+
+      if (response.status === 401) {
+        authStorage.clearToken();
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(
+            new CustomEvent('stockdna:auth_expired', { detail: { message: errorDetail } })
+          );
+        }
+      }
+
       throw new Error(errorDetail);
     }
 

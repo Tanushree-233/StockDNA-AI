@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { authStorage } from '../services/api';
 import AuthModal from './AuthModal';
 
 export default function Navbar({ activePage, onNavigate }) {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const isLoggedIn = authStorage.isLoggedIn();
-  const username = authStorage.getUser();
+  const [isLoggedIn, setIsLoggedIn] = useState(() => authStorage.isLoggedIn());
+  const [username, setUsername] = useState(() => authStorage.getUser());
+
+  useEffect(() => {
+    const handleAuthExpired = () => {
+      setIsLoggedIn(false);
+      setUsername('Analyst');
+    };
+    window.addEventListener('stockdna:auth_expired', handleAuthExpired);
+    return () => window.removeEventListener('stockdna:auth_expired', handleAuthExpired);
+  }, []);
 
   const handleLogout = () => {
     authStorage.clearToken();
-    window.location.reload();
+    setIsLoggedIn(false);
+    setUsername('Analyst');
   };
 
   const navItems = [
@@ -83,7 +93,8 @@ export default function Navbar({ activePage, onNavigate }) {
         onClose={() => setIsAuthOpen(false)}
         onSuccess={() => {
           setIsAuthOpen(false);
-          window.location.reload();
+          setIsLoggedIn(authStorage.isLoggedIn());
+          setUsername(authStorage.getUser());
         }}
       />
     </>

@@ -12,8 +12,16 @@ export default function History({ onNavigate }) {
   const [filterTicker, setFilterTicker] = useState('ALL');
   const [filterClass, setFilterClass] = useState('ALL');
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => authStorage.isLoggedIn());
 
-  const isLoggedIn = authStorage.isLoggedIn();
+  useEffect(() => {
+    const handleAuthExpired = () => {
+      setIsLoggedIn(false);
+      setHistory([]);
+    };
+    window.addEventListener('stockdna:auth_expired', handleAuthExpired);
+    return () => window.removeEventListener('stockdna:auth_expired', handleAuthExpired);
+  }, []);
 
   useEffect(() => {
     api
@@ -249,6 +257,7 @@ export default function History({ onNavigate }) {
         onClose={() => setIsAuthOpen(false)}
         onSuccess={() => {
           setIsAuthOpen(false);
+          setIsLoggedIn(true);
           loadHistory();
         }}
       />

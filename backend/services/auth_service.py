@@ -9,7 +9,7 @@ SECRET_KEY = os.getenv("JWT_SECRET_KEY", "stockdna-development-secret-key-change
 
 ALGORITHM = "HS256"
 
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))
 
 
 def hash_password(password: str) -> str:
