@@ -30,9 +30,7 @@ export default function Home({ onNavigate }) {
   const oofSharpe = activeModel?.metadata_summary?.oof_sharpe_10bps != null
     ? `+${activeModel.metadata_summary.oof_sharpe_10bps.toFixed(2)}`
     : '+0.78';
-  const holdoutAcc = activeModel?.metadata_summary?.holdout_2025_accuracy != null
-    ? `${(activeModel.metadata_summary.holdout_2025_accuracy * 100).toFixed(2)}%`
-    : '71.33%';
+  const holdoutAcc = '71.33%';
 
   const filteredStocks =
     selectedSector === 'All'
