@@ -201,4 +201,12 @@ export const api = {
   getResearchRegimes: async () => {
     return await request('/research/regimes');
   },
+
+  getActiveModelInfo: async () => {
+    return await request('/research/active-model');
+  },
+
+  getCandidateV7Report: async () => {
+    return await request('/research/candidate-v7');
+  },
 };

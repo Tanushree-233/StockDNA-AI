@@ -63,6 +63,7 @@ def get_shap_explanation(
     X: pd.DataFrame,
     explainer: Optional[shap.TreeExplainer] = None,
     predicted_class_idx: Optional[int] = None,
+    feature_groups: Optional[Dict[str, List[str]]] = None,
 ) -> Dict[str, Any]:
     """
     Calculates SHAP feature contributions for the predicted class and aggregates them
@@ -129,10 +130,18 @@ def get_shap_explanation(
     total_abs_internal = 0.0
     total_abs_external = 0.0
 
+    internal_set = set(feature_groups.get("INTERNAL", [])) if feature_groups else set()
+    external_set = set(feature_groups.get("EXTERNAL", [])) if feature_groups else set()
+
     for feature, value in zip(feature_names, values):
         shap_val = round(float(value), 4)
         abs_val = round(abs(shap_val), 4)
-        group = get_feature_group(feature)
+        if feature in internal_set:
+            group = "INTERNAL"
+        elif feature in external_set:
+            group = "EXTERNAL"
+        else:
+            group = get_feature_group(feature)
 
         if shap_val > 0.0001:
             direction = "POSITIVE"

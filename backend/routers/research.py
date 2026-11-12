@@ -10,6 +10,8 @@ import json
 import pandas as pd
 from fastapi import APIRouter, HTTPException
 
+from scripts.ml.model_adapter import get_active_model_status
+
 router = APIRouter(prefix="/research", tags=["Research & Methodology"])
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -60,3 +62,19 @@ def get_regimes():
     
     df = pd.read_csv(csv_path)
     return df.to_dict(orient="records")
+
+
+@router.get("/active-model")
+def get_active_model_info():
+    """Returns metadata and contract summary for the active prediction model and rollback target."""
+    return get_active_model_status()
+
+
+@router.get("/candidate-v7")
+def get_candidate_v7_report():
+    """Returns Candidate v7 alternative model comparison report."""
+    report_path = os.path.join(RESULTS_DIR, "diagnostics", "candidate_v7", "model_comparison_report.json")
+    if not os.path.exists(report_path):
+        raise HTTPException(status_code=404, detail="Candidate v7 comparison report not found.")
+    with open(report_path, "r", encoding="utf-8") as f:
+        return json.load(f)

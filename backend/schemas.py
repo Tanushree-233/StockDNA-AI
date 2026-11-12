@@ -33,6 +33,8 @@ class PredictionResponse(BaseModel):
     probabilities: Dict[str, float]
     xai: XAIResponse
     model_version: Optional[str] = "1.0.0"
+    model_type: Optional[str] = None
+    active_model_id: Optional[str] = None
     sector: Optional[str] = None
     latest_news: Optional[List[Any]] = None
     feature_snapshot: Optional[Dict[str, float]] = None

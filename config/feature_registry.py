@@ -327,8 +327,16 @@ def get_external_features() -> List[str]:
     return EXTERNAL_FEATURES.copy()
 
 
+SCALE_INVARIANT_GROUP_ALIASES: Dict[str, str] = {
+    "Earnings_Yield": "INTERNAL",
+    "Forward_Earnings_Yield": "INTERNAL",
+}
+
+
 def get_feature_group(feature_name: str) -> str:
     """Returns 'INTERNAL' or 'EXTERNAL' for a given feature."""
     if feature_name in FEATURE_REGISTRY:
         return FEATURE_REGISTRY[feature_name]["group"]
+    if feature_name in SCALE_INVARIANT_GROUP_ALIASES:
+        return SCALE_INVARIANT_GROUP_ALIASES[feature_name]
     return "EXTERNAL"

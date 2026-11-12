@@ -5,6 +5,7 @@ import { api } from '../services/api';
 export default function Home({ onNavigate }) {
   const [stocks, setStocks] = useState(DEFAULT_UNIVERSE);
   const [selectedSector, setSelectedSector] = useState('All');
+  const [activeModel, setActiveModel] = useState(null);
 
   useEffect(() => {
     api
@@ -17,7 +18,21 @@ export default function Home({ onNavigate }) {
       .catch(() => {
         // Fallback to DEFAULT_UNIVERSE already set
       });
+
+    api
+      .getActiveModelInfo()
+      .then((info) => setActiveModel(info))
+      .catch(() => {});
   }, []);
+
+  const modelLabel = activeModel?.model_type || 'HistGradientBoostingClassifier';
+  const modelVersion = activeModel?.model_version || '7.0.0-histgb-sqrt';
+  const oofSharpe = activeModel?.metadata_summary?.oof_sharpe_10bps != null
+    ? `+${activeModel.metadata_summary.oof_sharpe_10bps.toFixed(2)}`
+    : '+0.78';
+  const holdoutAcc = activeModel?.metadata_summary?.holdout_2025_accuracy != null
+    ? `${(activeModel.metadata_summary.holdout_2025_accuracy * 100).toFixed(2)}%`
+    : '55.52%';
 
   const filteredStocks =
     selectedSector === 'All'
@@ -38,9 +53,9 @@ export default function Home({ onNavigate }) {
       >
         <div style={{ maxWidth: '820px', display: 'flex', flexDirection: 'column', gap: '1.25rem', zIndex: 2, position: 'relative' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
-            <span className="badge badge-internal">Production Architecture v2.0.0</span>
-            <span className="badge badge-buy">76.3% Out-of-Sample Accuracy</span>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Expanded 22-Stock Universe &bull; 39,000+ Samples</span>
+            <span className="badge badge-internal">{modelLabel} v{modelVersion}</span>
+            <span className="badge badge-buy">{holdoutAcc} Untouched 2025 Accuracy</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Expanded 22-Stock Universe &bull; 38,937 Scale-Invariant Rows</span>
           </div>
 
           <h1 style={{ fontSize: '2.75rem', lineHeight: '1.15', letterSpacing: '-0.03em' }}>
@@ -93,16 +108,16 @@ export default function Home({ onNavigate }) {
           <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Tracked Equities</div>
         </div>
         <div className="glass-panel" style={{ padding: '1.25rem', textAlign: 'center' }}>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--color-buy)' }}>76.33%</div>
-          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Test Accuracy (Up from 34.5%)</div>
+          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--color-buy)' }}>{holdoutAcc}</div>
+          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>2025 Holdout Accuracy (Up from 34.5%)</div>
         </div>
         <div className="glass-panel" style={{ padding: '1.25rem', textAlign: 'center' }}>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: '#38BDF8' }}>60.17%</div>
-          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Backtest Win Rate</div>
+          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: '#38BDF8' }}>{oofSharpe}</div>
+          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>OOF Sharpe (Next-Bar 10bps)</div>
         </div>
         <div className="glass-panel" style={{ padding: '1.25rem', textAlign: 'center' }}>
-          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--color-internal)' }}>39,047</div>
-          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Clean Historical Observations</div>
+          <div style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--color-internal)' }}>38,937</div>
+          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Scale-Invariant Feature Rows</div>
         </div>
       </section>
 
@@ -131,7 +146,7 @@ export default function Home({ onNavigate }) {
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <span className="badge badge-buy">Core Deliverable 1</span>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>XGBoost v2 Engine</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{modelLabel}</span>
             </div>
             <h3 style={{ fontSize: '1.35rem' }}>Stock Movement Prediction</h3>
             <p style={{ fontSize: '0.9rem', lineHeight: '1.6' }}>

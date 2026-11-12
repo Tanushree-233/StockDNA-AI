@@ -13,6 +13,7 @@ export default function Predict({ onNavigate, initialTicker = 'TCS', onPredictio
   const [error, setError] = useState(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(() => authStorage.isLoggedIn());
+  const [activeModel, setActiveModel] = useState(null);
 
   useEffect(() => {
     if (initialTicker) {
@@ -41,6 +42,11 @@ export default function Predict({ onNavigate, initialTicker = 'TCS', onPredictio
       .catch(() => {
         // Fallback to DEFAULT_UNIVERSE already set
       });
+
+    api
+      .getActiveModelInfo()
+      .then((info) => setActiveModel(info))
+      .catch(() => {});
   }, []);
 
   const handlePredict = async (e) => {
@@ -87,7 +93,7 @@ export default function Predict({ onNavigate, initialTicker = 'TCS', onPredictio
       <div>
         <h2 style={{ fontSize: '2rem' }}>Stock Movement Prediction Engine</h2>
         <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-          Generates 5-trading-day directional return probabilities using the locked XGBoost production model.
+          Generates 5-trading-day directional return probabilities using the active production model ({activeModel?.model_type || 'HistGradientBoostingClassifier'} &bull; v{activeModel?.model_version || '7.0.0-histgb-sqrt'}).
         </p>
       </div>
 
@@ -212,7 +218,7 @@ export default function Predict({ onNavigate, initialTicker = 'TCS', onPredictio
                   </span>
                 </div>
                 <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                  Analysis Timestamp: {new Date(result.timestamp).toLocaleString()} &bull; Model Contract v{result.model_version || '1.0.0'} &bull; 34 Scale-Invariant Features (10 Internal / 24 External)
+                  Analysis Timestamp: {new Date(result.timestamp).toLocaleString()} &bull; {result.model_type || activeModel?.model_type || 'HistGradientBoostingClassifier'} v{result.model_version || '7.0.0-histgb-sqrt'} &bull; 34 Scale-Invariant Features (10 Internal / 24 External)
                 </p>
               </div>
 

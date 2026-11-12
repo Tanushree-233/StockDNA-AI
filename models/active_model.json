@@ -1,0 +1,10 @@
+{
+  "active_model_id": "candidate_v7",
+  "active_model_dir": "models/candidates/candidate_v7",
+  "model_version": "7.0.0-histgb-sqrt",
+  "model_type": "HistGradientBoostingClassifier",
+  "rollback_model_id": "production",
+  "rollback_model_dir": "models/production",
+  "updated_at": "2026-11-12T14:58:00.470411+00:00",
+  "reason": "HistGB_Sqrt passed Phase 4 acceptance criteria (+15.70% LO 10bps net return, 0.783 Sharpe, +8.42% LS net return, 47.60% OOF accuracy)"
+}

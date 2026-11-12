@@ -70,10 +70,10 @@ export default function Methodology() {
    [Automated Taxonomy]    ─── Classify variables: INTERNAL (Company) vs EXTERNAL (Market)
                │
                ▼
-   [Feature Engineering]   ─── 34 Scale-Invariant Features (zero nominal prices: Close, SMA, EMA)
+   [Feature Engineering]   ─── 34 Scale-Invariant Features (Earnings_Yield, Forward_Earnings_Yield)
                │
                ▼
-   [Production XGBoost]    ─── 5-Trading-Day Return Movement: BUY, HOLD (KEEP), SELL
+   [Active Candidate v7]   ─── HistGradientBoostingClassifier (5-Day BUY / HOLD / SELL)
                │
                ▼
    [TreeExplainer SHAP]    ─── Exact Log-Odds Attribution: Internal % vs External %`}

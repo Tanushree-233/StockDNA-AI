@@ -21,7 +21,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from scripts.ml.predict_service import load_production_model, predict_stock
+from scripts.ml.model_adapter import load_active_model, predict_ticker_via_adapter
 from backend.services.shap_service import get_shap_explanation
 from backend.services.history_service import save_prediction
 from backend.services.news_service import get_latest_news
@@ -61,10 +61,10 @@ def predict(
         )
 
     try:
-        # 1. Canonical prediction with offline/live feature parity via DataToolProvider
+        # 1. Canonical prediction with offline/live feature parity via model adapter
         provider = data_provider or DataToolProvider()
-        pred_res = predict_stock(clean_ticker, data_provider=provider)
-        model, contract = load_production_model()
+        pred_res = predict_ticker_via_adapter(clean_ticker, data_provider=provider)
+        model, contract, active_model_id = load_active_model()
 
         # 2. Extract feature matrix for SHAP
         feature_names = contract["feature_names"]
@@ -77,7 +77,10 @@ def predict(
         pred_class_idx = inv_map.get(pred_res["prediction"], 1)
 
         shap_explanation = get_shap_explanation(
-            model, X_df, predicted_class_idx=pred_class_idx
+            model,
+            X_df,
+            predicted_class_idx=pred_class_idx,
+            feature_groups=contract.get("feature_groups"),
         )
 
         # 4. Resolve company metadata
@@ -116,6 +119,8 @@ def predict(
             "probabilities": prob_dict,
             "xai": xai_payload,
             "model_version": pred_res["model_version"],
+            "model_type": pred_res.get("model_type"),
+            "active_model_id": active_model_id,
             "sector": sector,
             "latest_news": news,
             "feature_snapshot": feature_snapshot,
