@@ -32,7 +32,7 @@ export default function Home({ onNavigate }) {
     : '+0.78';
   const holdoutAcc = activeModel?.metadata_summary?.holdout_2025_accuracy != null
     ? `${(activeModel.metadata_summary.holdout_2025_accuracy * 100).toFixed(2)}%`
-    : '55.52%';
+    : '71.33%';
 
   const filteredStocks =
     selectedSector === 'All'
