@@ -57,7 +57,7 @@ export default function Home({ onNavigate }) {
           </div>
 
           <h1 style={{ fontSize: '2.75rem', lineHeight: '1.15', letterSpacing: '-0.03em' }}>
-            Explainable AI Decision Support for <span style={{ background: 'linear-gradient(135deg, #6366F1, #A855F7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Equities Movement</span>
+            StockDNA-AI: Explainable AI for<span style={{ background: 'linear-gradient(135deg, #6366F1, #A855F7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Stock Movement Prediction</span>
           </h1>
 
           <p style={{ fontSize: '1.1rem', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
