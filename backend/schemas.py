@@ -13,6 +13,10 @@ class XAIFactorContribution(BaseModel):
     importance: float
     direction: str
     explanation: str
+    layman_name: Optional[str] = None
+    layman_definition: Optional[str] = None
+    layman_explanation: Optional[str] = None
+    layman_signal: Optional[str] = None
 
 
 class XAIResponse(BaseModel):
@@ -22,6 +26,7 @@ class XAIResponse(BaseModel):
     top_internal_factors: List[XAIFactorContribution]
     top_external_factors: List[XAIFactorContribution]
     all_feature_contributions: Optional[List[XAIFactorContribution]] = None
+    layman_summary: Optional[str] = None
 
 
 class PredictionResponse(BaseModel):
@@ -32,6 +37,7 @@ class PredictionResponse(BaseModel):
     confidence: float
     probabilities: Dict[str, float]
     xai: XAIResponse
+    layman_summary: Optional[str] = None
     model_version: Optional[str] = "1.0.0"
     model_type: Optional[str] = None
     active_model_id: Optional[str] = None

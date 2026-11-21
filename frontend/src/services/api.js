@@ -209,4 +209,22 @@ export const api = {
   getCandidateV7Report: async () => {
     return await request('/research/candidate-v7');
   },
+
+  // Market Trends & Charting
+  getTrendsSummary: async () => {
+    return await request('/market/trends/summary');
+  },
+
+  getTickerTrends: async (ticker, range = '6M') => {
+    const clean = ticker.replace('.NS', '').trim().toUpperCase();
+    return await request(`/market/trends/${clean}?range=${range}`);
+  },
+
+  // AI Chatbot
+  sendChatMessage: async (message, contextTicker = null) => {
+    return await request('/chatbot/message', {
+      method: 'POST',
+      body: JSON.stringify({ message, context_ticker: contextTicker }),
+    });
+  },
 };

@@ -72,6 +72,15 @@ def predict(
         X_df = pd.DataFrame([feature_snapshot])[feature_names]
 
         # 3. Compute SHAP explanations and factor decomposition
+        # 4. Resolve company metadata
+        universe = get_company_universe()
+        match = universe[universe["clean_ticker"] == clean_ticker]
+        company_name = match["company"].iloc[0] if not match.empty else clean_ticker
+        sector = match["sector"].iloc[0] if not match.empty else "N/A"
+
+        conf_float = float(pred_res["confidence"])
+
+        # 3. Compute SHAP explanations and factor decomposition
         # Ensure predicted class index aligns with class label
         inv_map = {v: int(k) for k, v in contract["class_mapping"].items()}
         pred_class_idx = inv_map.get(pred_res["prediction"], 1)
@@ -81,13 +90,9 @@ def predict(
             X_df,
             predicted_class_idx=pred_class_idx,
             feature_groups=contract.get("feature_groups"),
+            company_name=company_name,
+            confidence=conf_float,
         )
-
-        # 4. Resolve company metadata
-        universe = get_company_universe()
-        match = universe[universe["clean_ticker"] == clean_ticker]
-        company_name = match["company"].iloc[0] if not match.empty else clean_ticker
-        sector = match["sector"].iloc[0] if not match.empty else "N/A"
 
         # 5. Fetch latest news headlines
         try:
@@ -103,12 +108,12 @@ def predict(
             "top_internal_factors": shap_explanation["top_internal_factors"],
             "top_external_factors": shap_explanation["top_external_factors"],
             "all_feature_contributions": shap_explanation["all_feature_contributions"],
+            "layman_summary": shap_explanation.get("layman_summary"),
         }
 
         # 7. Build Authoritative Prediction Response Contract
         # Float probabilities in [0.0, 1.0] as specified in Step 2 contract
         prob_dict = {k: float(v) for k, v in pred_res["probabilities"].items()}
-        conf_float = float(pred_res["confidence"])
 
         result = {
             "ticker": clean_ticker,
@@ -118,6 +123,7 @@ def predict(
             "confidence": conf_float,
             "probabilities": prob_dict,
             "xai": xai_payload,
+            "layman_summary": shap_explanation.get("layman_summary"),
             "model_version": pred_res["model_version"],
             "model_type": pred_res.get("model_type"),
             "active_model_id": active_model_id,

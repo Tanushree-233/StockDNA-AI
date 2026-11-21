@@ -66,12 +66,12 @@ export default function ShapWaterfall({
       </div>
 
       {/* Zero Center Line Header */}
-      <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: '1rem', alignItems: 'center' }}>
-        <span style={{ fontSize: '0.75rem', fontWeight: '600', color: 'var(--text-muted)' }}>Feature / Group</span>
+      <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '1rem', alignItems: 'center' }}>
+        <span style={{ fontSize: '0.75rem', fontWeight: '600', color: 'var(--text-muted)' }}>Clue / Market Indicator</span>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-muted)', position: 'relative' }}>
-          <span>&larr; Moderates / Away from {predictedClass} (-SHAP)</span>
+          <span>&larr; Away from {predictedClass} (Pushes toward alternative)</span>
           <span style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', fontWeight: '700', color: 'var(--text-secondary)' }}>0</span>
-          <span>Reinforces {predictedClass} (+SHAP) &rarr;</span>
+          <span>Supports {predictedClass} (Reinforces decision) &rarr;</span>
         </div>
       </div>
 
@@ -81,16 +81,17 @@ export default function ShapWaterfall({
           const val = item.shap_value || 0;
           const isPositive = val >= 0;
           const widthPct = Math.min(50, (Math.abs(val) / maxAbs) * 50);
+          const displayName = item.layman_name || item.feature.replace(/_/g, ' ');
 
           return (
             <div
               key={item.feature || idx}
               style={{
                 display: 'grid',
-                gridTemplateColumns: '180px 1fr',
+                gridTemplateColumns: '260px 1fr',
                 gap: '1rem',
                 alignItems: 'center',
-                padding: '0.5rem 0.65rem',
+                padding: '0.55rem 0.75rem',
                 borderRadius: 'var(--radius-md)',
                 backgroundColor: 'rgba(255, 255, 255, 0.02)',
                 border: '1px solid rgba(255, 255, 255, 0.04)',
@@ -101,27 +102,32 @@ export default function ShapWaterfall({
                 <span
                   style={{
                     fontSize: '0.82rem',
-                    fontWeight: '600',
+                    fontWeight: '700',
                     color: 'var(--text-primary)',
                     whiteSpace: 'nowrap',
                     textOverflow: 'ellipsis',
                     overflow: 'hidden',
                   }}
-                  title={item.feature}
+                  title={`${displayName} (${item.feature})`}
                 >
-                  {item.feature}
+                  {displayName}
                 </span>
-                <span
-                  style={{
-                    fontSize: '0.65rem',
-                    fontWeight: '700',
-                    color: item.group === 'INTERNAL' ? 'var(--color-internal)' : 'var(--color-external)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.04em',
-                  }}
-                >
-                  {item.group}
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.15rem' }}>
+                  <span
+                    style={{
+                      fontSize: '0.62rem',
+                      fontWeight: '700',
+                      color: item.group === 'INTERNAL' ? 'var(--color-internal)' : 'var(--color-external)',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.04em',
+                    }}
+                  >
+                    {item.group === 'INTERNAL' ? 'Company Factor' : 'Market Factor'}
+                  </span>
+                  <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>
+                    &bull; {item.feature}
+                  </span>
+                </div>
               </div>
 
               {/* Bi-directional Bar Area */}

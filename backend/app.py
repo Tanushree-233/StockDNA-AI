@@ -10,6 +10,8 @@ from backend.routers.prediction import router as prediction_router
 from backend.routers.history import router as history_router
 from backend.routers.datatool import router as datatool_router
 from backend.routers.research import router as research_router
+from backend.routers.trends import router as trends_router
+from backend.routers.chatbot import router as chatbot_router
 
 # Ensure tables exist
 Base.metadata.create_all(bind=engine)
@@ -37,6 +39,8 @@ app.include_router(prediction_router)
 app.include_router(history_router)
 app.include_router(datatool_router)
 app.include_router(research_router)
+app.include_router(trends_router)
+app.include_router(chatbot_router)
 
 # Mount frontend production build if available
 dist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"))

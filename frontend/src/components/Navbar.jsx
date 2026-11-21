@@ -25,7 +25,9 @@ export default function Navbar({ activePage, onNavigate }) {
   const navItems = [
     { id: 'home', label: 'Dashboard' },
     { id: 'predict', label: 'Stock Prediction' },
+    { id: 'trends', label: 'Price Trends' },
     { id: 'xai', label: 'Explainability' },
+    { id: 'chatbot', label: 'AI Chatbot' },
     { id: 'aggregator', label: 'Data Aggregator' },
     { id: 'datatool', label: 'Data Studio' },
     { id: 'history', label: 'History' },

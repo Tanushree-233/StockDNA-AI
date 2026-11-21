@@ -239,6 +239,34 @@ export default function Predict({ onNavigate, initialTicker = 'TCS', onPredictio
             {/* Probability Gauge */}
             <ProbabilityGauge probabilities={result.probabilities} />
 
+            {/* Plain English Layman Summary */}
+            {(result.layman_summary || result.xai?.layman_summary) && (
+              <div
+                style={{
+                  padding: '1.25rem 1.5rem',
+                  borderRadius: 'var(--radius-md)',
+                  background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.08) 100%)',
+                  border: '1px solid rgba(99, 102, 241, 0.3)',
+                  display: 'flex',
+                  gap: '1rem',
+                  alignItems: 'flex-start',
+                }}
+              >
+                <span style={{ fontSize: '1.25rem' }}>💡</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <strong style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+                      In Plain English: What is the AI thinking?
+                    </strong>
+                    <span className="badge badge-internal" style={{ fontSize: '0.65rem' }}>Layman Explanation</span>
+                  </div>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.55' }}>
+                    {result.layman_summary || result.xai?.layman_summary}
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* High-Level Attribution Callout */}
             <div
               style={{
@@ -255,27 +283,38 @@ export default function Predict({ onNavigate, initialTicker = 'TCS', onPredictio
             >
               <div>
                 <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  SHAP Primary Driver
+                  Decision Drivers Breakdown
                 </span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.2rem' }}>
                   <span
                     className={`badge ${result.xai?.primary_driver === 'INTERNAL' ? 'badge-internal' : 'badge-external'}`}
                   >
-                    {result.xai?.primary_driver} Factors
+                    {result.xai?.primary_driver === 'INTERNAL' ? 'Company Factors' : 'Market Factors'}
                   </span>
                   <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                    Internal: <strong>{result.xai?.internal_percentage?.toFixed(1)}%</strong> &bull; External: <strong>{result.xai?.external_percentage?.toFixed(1)}%</strong>
+                    Company Earnings: <strong>{result.xai?.internal_percentage?.toFixed(1)}%</strong> &bull; Market Trends: <strong>{result.xai?.external_percentage?.toFixed(1)}%</strong>
                   </span>
                 </div>
               </div>
 
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => onNavigate('xai', { prediction: result })}
-              >
-                Inspect SHAP Decomposition &rarr;
-              </button>
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => onNavigate('trends', { ticker: result.ticker })}
+                  style={{ fontSize: '0.85rem', padding: '0.45rem 0.95rem' }}
+                >
+                  📈 View Price Trends & Charts
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => onNavigate('xai', { prediction: result })}
+                  style={{ fontSize: '0.85rem', padding: '0.45rem 0.95rem' }}
+                >
+                  Inspect Why (XAI) &rarr;
+                </button>
+              </div>
             </div>
 
             {/* Academic Decision-Support Disclaimer */}

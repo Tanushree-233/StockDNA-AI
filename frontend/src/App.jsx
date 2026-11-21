@@ -3,10 +3,13 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Predict from './pages/Predict';
 import Explainability from './pages/Explainability';
+import Trends from './pages/Trends';
+import Chatbot from './pages/Chatbot';
 import DataTool from './pages/DataTool';
 import History from './pages/History';
 import Methodology from './pages/Methodology';
 import DataAggregator from './pages/DataAggregator';
+import FloatingChatbot from './components/FloatingChatbot';
 
 export default function App() {
   const [activePage, setActivePage] = useState('home');
@@ -41,9 +44,21 @@ export default function App() {
             onPredictionSuccess={handlePredictionSuccess}
           />
         )}
+        {activePage === 'trends' && (
+          <Trends
+            initialTicker={selectedTicker}
+            onNavigate={handleNavigate}
+          />
+        )}
         {activePage === 'xai' && (
           <Explainability
             initialPrediction={latestPrediction}
+            onNavigate={handleNavigate}
+          />
+        )}
+        {activePage === 'chatbot' && (
+          <Chatbot
+            initialTicker={selectedTicker}
             onNavigate={handleNavigate}
           />
         )}
@@ -52,6 +67,11 @@ export default function App() {
         {activePage === 'history' && <History onNavigate={handleNavigate} />}
         {activePage === 'methodology' && <Methodology />}
       </main>
+
+      {/* Floating Instant AI Assistant */}
+      {activePage !== 'chatbot' && (
+        <FloatingChatbot currentTicker={selectedTicker} onNavigate={handleNavigate} />
+      )}
 
       <footer className="footer">
         <div className="footer-content">
