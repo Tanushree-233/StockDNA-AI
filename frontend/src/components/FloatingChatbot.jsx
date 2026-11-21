@@ -102,13 +102,14 @@ export default function FloatingChatbot({ currentTicker = 'TCS', onNavigate }) {
             bottom: '90px',
             right: '24px',
             zIndex: 9998,
-            width: '380px',
+            width: '390px',
             maxWidth: 'calc(100vw - 32px)',
-            height: '500px',
+            height: '520px',
             borderRadius: 'var(--radius-lg)',
-            background: 'var(--color-bg-panel)',
-            border: '1px solid var(--border-subtle)',
-            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.6)',
+            backgroundColor: '#0B101E',
+            background: '#0B101E',
+            border: '1px solid rgba(99, 102, 241, 0.35)',
+            boxShadow: '0 24px 60px rgba(0, 0, 0, 0.95), 0 4px 20px rgba(99, 102, 241, 0.25)',
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
@@ -117,40 +118,71 @@ export default function FloatingChatbot({ currentTicker = 'TCS', onNavigate }) {
           {/* Drawer Header */}
           <div
             style={{
-              padding: '0.85rem 1.15rem',
-              background: 'rgba(255, 255, 255, 0.03)',
-              borderBottom: '1px solid var(--border-subtle)',
+              padding: '0.9rem 1.15rem',
+              backgroundColor: '#11182B',
+              background: '#11182B',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span style={{ fontSize: '1.1rem' }}>🤖</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <div
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'var(--color-brand)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1rem',
+                }}
+              >
+                🤖
+              </div>
               <div>
-                <strong style={{ fontSize: '0.85rem', color: 'white', display: 'block' }}>
+                <strong style={{ fontSize: '0.88rem', color: '#F8FAFC', display: 'block' }}>
                   StockDNA AI Assistant
                 </strong>
-                <span style={{ fontSize: '0.7rem', color: 'var(--color-brand-light)' }}>
-                  Active context: {currentTicker}
+                <span style={{ fontSize: '0.72rem', color: 'var(--color-brand-light)' }}>
+                  Active stock context: <strong style={{ color: 'white' }}>{currentTicker}</strong>
                 </span>
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={() => onNavigate && onNavigate('chatbot', { ticker: currentTicker })}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                color: 'var(--text-muted)',
-                fontSize: '0.75rem',
-                cursor: 'pointer',
-                textDecoration: 'underline',
-              }}
-            >
-              Full Screen &rarr;
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <button
+                type="button"
+                onClick={() => onNavigate && onNavigate('chatbot', { ticker: currentTicker })}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  borderRadius: 'var(--radius-sm)',
+                  color: 'var(--text-secondary)',
+                  fontSize: '0.72rem',
+                  padding: '0.25rem 0.55rem',
+                  cursor: 'pointer',
+                }}
+              >
+                Full Page &rarr;
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsOpen(false)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: 'var(--text-muted)',
+                  fontSize: '1.1rem',
+                  cursor: 'pointer',
+                  padding: '0 0.25rem',
+                }}
+              >
+                ✕
+              </button>
+            </div>
           </div>
 
           {/* Messages Scroll Area */}
@@ -158,10 +190,12 @@ export default function FloatingChatbot({ currentTicker = 'TCS', onNavigate }) {
             style={{
               flex: 1,
               overflowY: 'auto',
-              padding: '1rem',
+              padding: '1.15rem',
+              backgroundColor: '#0B101E',
+              background: '#0B101E',
               display: 'flex',
               flexDirection: 'column',
-              gap: '0.85rem',
+              gap: '0.95rem',
             }}
           >
             {messages.map((m) => {
@@ -179,36 +213,50 @@ export default function FloatingChatbot({ currentTicker = 'TCS', onNavigate }) {
                   <div
                     style={{
                       maxWidth: '85%',
-                      padding: '0.65rem 0.85rem',
-                      borderRadius: isUser ? '12px 12px 2px 12px' : '12px 12px 12px 2px',
-                      background: isUser ? 'var(--color-brand)' : 'rgba(255, 255, 255, 0.05)',
-                      border: isUser ? 'none' : '1px solid var(--border-subtle)',
-                      fontSize: '0.82rem',
-                      lineHeight: '1.45',
-                      color: 'white',
+                      padding: '0.75rem 0.95rem',
+                      borderRadius: isUser ? '14px 14px 2px 14px' : '14px 14px 14px 2px',
+                      backgroundColor: isUser ? 'var(--color-brand)' : '#151D33',
+                      background: isUser ? 'var(--color-brand)' : '#151D33',
+                      border: isUser ? 'none' : '1px solid rgba(255, 255, 255, 0.09)',
+                      fontSize: '0.84rem',
+                      lineHeight: '1.5',
+                      color: '#F8FAFC',
+                      boxShadow: isUser
+                        ? '0 4px 12px rgba(99, 102, 241, 0.3)'
+                        : '0 4px 12px rgba(0, 0, 0, 0.35)',
                     }}
                   >
                     {m.text}
                   </div>
 
                   {!isUser && m.suggestedQuestions && m.suggestedQuestions.length > 0 && (
-                    <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
+                    <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', marginTop: '0.3rem' }}>
                       {m.suggestedQuestions.map((sq, i) => (
                         <button
                           key={i}
                           type="button"
                           onClick={() => handleSend(sq)}
                           style={{
-                            background: 'rgba(255, 255, 255, 0.04)',
-                            border: '1px solid var(--border-subtle)',
+                            backgroundColor: '#151D33',
+                            background: '#151D33',
+                            border: '1px solid rgba(99, 102, 241, 0.3)',
                             borderRadius: '12px',
                             color: 'var(--text-secondary)',
-                            fontSize: '0.7rem',
-                            padding: '0.2rem 0.55rem',
+                            fontSize: '0.72rem',
+                            padding: '0.25rem 0.6rem',
                             cursor: 'pointer',
+                            transition: 'all 0.15s ease',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.backgroundColor = 'rgba(99, 102, 241, 0.25)';
+                            e.currentTarget.style.color = 'white';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor = '#151D33';
+                            e.currentTarget.style.color = 'var(--text-secondary)';
                           }}
                         >
-                          {sq}
+                          💡 {sq}
                         </button>
                       ))}
                     </div>
@@ -218,9 +266,9 @@ export default function FloatingChatbot({ currentTicker = 'TCS', onNavigate }) {
             })}
 
             {loading && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', fontSize: '0.75rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', fontSize: '0.75rem', padding: '0.25rem' }}>
                 <span className="spinner" style={{ width: '1rem', height: '1rem' }} />
-                <span>Thinking...</span>
+                <span>AI analyzing...</span>
               </div>
             )}
             <div ref={messagesEndRef} />
@@ -229,11 +277,12 @@ export default function FloatingChatbot({ currentTicker = 'TCS', onNavigate }) {
           {/* Drawer Input */}
           <div
             style={{
-              padding: '0.75rem',
-              borderTop: '1px solid var(--border-subtle)',
-              background: 'rgba(255, 255, 255, 0.02)',
+              padding: '0.85rem 1rem',
+              borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+              backgroundColor: '#11182B',
+              background: '#11182B',
               display: 'flex',
-              gap: '0.5rem',
+              gap: '0.65rem',
             }}
           >
             <input
@@ -247,12 +296,13 @@ export default function FloatingChatbot({ currentTicker = 'TCS', onNavigate }) {
               disabled={loading}
               style={{
                 flex: 1,
-                padding: '0.55rem 0.75rem',
+                padding: '0.65rem 0.85rem',
                 borderRadius: 'var(--radius-sm)',
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid var(--border-subtle)',
-                color: 'white',
-                fontSize: '0.82rem',
+                backgroundColor: '#1A233D',
+                background: '#1A233D',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                color: '#F8FAFC',
+                fontSize: '0.84rem',
               }}
             />
             <button
@@ -260,7 +310,7 @@ export default function FloatingChatbot({ currentTicker = 'TCS', onNavigate }) {
               className="btn btn-primary"
               onClick={() => handleSend()}
               disabled={loading || !input.trim()}
-              style={{ padding: '0.55rem 0.85rem', fontSize: '0.8rem' }}
+              style={{ padding: '0.6rem 0.95rem', fontSize: '0.82rem' }}
             >
               Send
             </button>
